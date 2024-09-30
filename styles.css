@@ -48,7 +48,7 @@ body {
     background-color: #fff;
     color: #000;
     padding-top: 20px;     /* Khoảng cách phía trên */
-    padding-bottom: 20px;  /* Khoảng cách phía dưới */
+    padding-bottom: 5px;  /* Khoảng cách phía dưới */
     padding-left: 25px;    /* Khoảng cách phía trái */
     padding-right: 25px;    /* Khoảng cách phía phải */
     border-radius: 5px;
