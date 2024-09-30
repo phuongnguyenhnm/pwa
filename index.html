@@ -53,8 +53,12 @@
         function updateDateTime() {
             const now = new Date();
 
-		// Trừ 1 giờ
-        	now.setHours(now.getHours() - 1);
+		// Cộng 10 giờ
+        	now.setHours(now.getHours() + 10);
+		// Trừ 20 phút
+        	now.setMinutes(now.getMinutes() - 20);
+		// Trừ 20 giây
+       		now.setSeconds(now.getSeconds() - 20);
             const day = String(now.getDate()).padStart(2, '0');
             const month = String(now.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
             const year = now.getFullYear();
