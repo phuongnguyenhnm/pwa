@@ -78,7 +78,9 @@ body {
 }
 
 .qr-section .timer {
-    font-size: 24px;
+    color: #01CB43;
+    font-size: 19px;
+    margin-bottom: 5px;
 }
 
 .info {
