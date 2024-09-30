@@ -29,8 +29,8 @@ body {
 }
 .yellow-box {
         background-color: #EABC42;
-        padding-top: 20px;     /* Khoảng cách phía trên */
-  	padding-bottom: 20px;  /* Khoảng cách phía dưới */
+        padding-top: 22px;     /* Khoảng cách phía trên */
+  	padding-bottom: 22px;  /* Khoảng cách phía dưới */
     	padding-left: 40px;    /* Khoảng cách phía trái */
     	padding-right: 40px;    /* Khoảng cách phía phải */
         border-radius: 5px;
@@ -63,7 +63,7 @@ body {
 }
 
 .qr-section .rf {
-	font-size: 16px;
+	font-size: 14px;
 	margin-bottom: 10px;
 	color: #;
 }
