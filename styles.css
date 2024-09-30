@@ -29,7 +29,9 @@ body {
 }
 
 .header {
-    margin-bottom: 20px;
+	margin-bottom: 10px;
+	color: #e6e0c7;
+	font-size: 18px;
 }
 
 .qr-section {
@@ -41,8 +43,9 @@ body {
 }
 
 .qr-section .time {
-    font-size: 18px;
-    margin-bottom: 10px;
+	font-size: 16px;
+	margin-bottom: 10px;
+	color: #fff;
 }
 
 .qr-section .qr-code img {
@@ -53,7 +56,7 @@ body {
 
 .qr-section .status {
     color: green;
-    font-size: 18px;
+    font-size: 19px;
     margin-bottom: 5px;
 }
 
@@ -64,6 +67,6 @@ body {
 .info {
     margin-top: 20px;
     font-size: 16px;
-    color: #b3b3b3;
+    color: #c5c4c7;
     width: 80%;
 }
