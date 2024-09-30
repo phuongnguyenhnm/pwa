@@ -28,6 +28,13 @@ body {
     align-items: center;
 }
 
+.yellow-box {
+            background-color: #f7cc59;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+
 .header {
 	margin-bottom: 10px;
 	color: #e6e0c7;
