@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Times New Roman', sans-serif;
     background-color: #2f3b4c;
     color: #fff;
     text-align: center;
@@ -29,8 +29,8 @@ body {
 }
 .yellow-box {
         background-color: #EABC42;
-        padding-top: 15px;     /* Khoảng cách phía trên */
-  	padding-bottom: 15px;  /* Khoảng cách phía dưới */
+        padding-top: 20px;     /* Khoảng cách phía trên */
+  	padding-bottom: 20px;  /* Khoảng cách phía dưới */
     	padding-left: 40px;    /* Khoảng cách phía trái */
     	padding-right: 40px;    /* Khoảng cách phía phải */
         border-radius: 5px;
