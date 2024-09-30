@@ -44,6 +44,33 @@
             </div>
 		<p class="rf">刷新二维码</p>
             <p class="status">已生效</p>
+
+
+
+
+<p class="timer" id="currentDatetime"></p>         
+  <script>
+        function updateDateTime() {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+            const year = now.getFullYear();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeString = ` 1${hours}:2${minutes}:${seconds}`;
+            document.getElementById('currentDatetime').innerText = `${dateString} ${timeString}`;
+        }
+
+        // Cập nhật ngày và giờ ngay lập tức và sau đó mỗi giây
+        updateDateTime();
+        setInterval(updateDateTime, 1000);	  
+    </script>
+
+
+		
+
+		
             <p class="timer">24:05:37</p>
         </div>
 
