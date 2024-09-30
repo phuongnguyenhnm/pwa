@@ -11,7 +11,7 @@ body {
     text-align: center;
 	margin: 0;
         height: 100vh;
-        background-image: url('/bg.166aa78952b99bcea2bea5611b3041fa.png'); /* Thay đường dẫn và tên hình ảnh tại đây */
+        background-image: url('https://phuongnguyenhnm.github.io/pwa/bg.png'); /* Thay đường dẫn và tên hình ảnh tại đây */
         background-size: cover; /* Để hình ảnh phủ toàn bộ trang */
         background-position: center; /* Đặt hình ảnh ở giữa */
         display: flex;
