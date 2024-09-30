@@ -18,8 +18,9 @@
         </div>
         <!-- Phần mã QR -->
         <div class="qr-section">
-            <p class="time">
+            
   <script>
+	<p class="time">
         function updateDateTime() {
             const now = new Date();
             const day = String(now.getDate()).padStart(2, '0');
@@ -37,8 +38,9 @@
         // Cập nhật ngày và giờ ngay lập tức và sau đó mỗi giây
         updateDateTime();
         setInterval(updateDateTime, 1000);
+	</p>	  
     </script>
-	    </p>
+	    
             <div class="qr-code">
                 <img src="https://phuongnguyenhnm.github.io/pwa/qr-code.png" alt="Mã QR">
             </div>
