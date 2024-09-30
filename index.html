@@ -18,20 +18,25 @@
         </div>
         <!-- Phần mã QR -->
         <div class="qr-section">
-            <p class="time">2024-9-26 
-	   <script>
-        function updateTime() {
+            <p class="time">
+  <script>
+        function updateDateTime() {
             const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+            const year = now.getFullYear();
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            const dateString = `${day}/${month}/${year}`;
             const timeString = `${hours}:${minutes}:${seconds}`;
-            document.getElementById('currentTime').innerText = timeString;
+            document.getElementById('currentDatetime').innerText = `${dateString} ${timeString}`;
         }
 
-        // Cập nhật thời gian ngay lập tức và sau đó mỗi giây
-        updateTime();
-        setInterval(updateTime, 1000);
+        // Cập nhật ngày và giờ ngay lập tức và sau đó mỗi giây
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
     </script>
 	    </p>
             <div class="qr-code">
