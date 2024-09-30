@@ -29,6 +29,13 @@ body {
 }
 .yellow-box {
         background-color: #EABC42;
+	width: 265px;
+    	height: 60px;
+	position: relative;
+ 	border-radius: 8px;
+ 	display: flex;
+ 	justify-content: center;
+    	align-items: center;
         padding-top: 22px;     /* Khoảng cách phía trên */
   	padding-bottom: 22px;  /* Khoảng cách phía dưới */
     	padding-left: 40px;    /* Khoảng cách phía trái */
@@ -36,6 +43,27 @@ body {
         border-radius: 5px;
 	box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
+.yellow-box::before,
+.yellow-box::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 20px;
+    background-color: #2c2f3b; /* Màu nền */
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 50%;
+}
+
+.yellow-box::before {
+    left: 0;
+    margin-left: -5px; /* Đặt vị trí khuyết bên trái */
+}
+
+.yellow-box::after {
+    right: 0;
+    margin-right: -5px; /* Đặt vị trí khuyết bên phải */
+}
 
 
 .header {
