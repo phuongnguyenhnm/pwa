@@ -29,7 +29,7 @@ body {
 }
 
 .yellow-box {
-        background-color: #f7cc59;
+        background-color: #EABC42;
         padding: 15px;
         border-radius: 10px;
 	box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
@@ -38,7 +38,7 @@ body {
 
 .header {
 	margin-bottom: 10px;
-	color: #e6e0c7;
+	color: #FFEDAE;
 	font-size: 14px;
 }
 
@@ -63,7 +63,7 @@ body {
 }
 
 .qr-section .status {
-    color: green;
+    color: #01CB43;
     font-size: 19px;
     margin-bottom: 5px;
 }
@@ -75,6 +75,6 @@ body {
 .info {
     margin-top: 20px;
     font-size: 16px;
-    color: #c5c4c7;
+    color: #FDE4BB;
     width: 80%;
 }
