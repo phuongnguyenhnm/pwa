@@ -29,7 +29,10 @@ body {
 }
 .yellow-box {
         background-color: #EABC42;
-        padding: 35px;
+        padding-top: 15px;     /* Khoảng cách phía trên */
+  	padding-bottom: 15px;  /* Khoảng cách phía dưới */
+    	padding-left: 35px;    /* Khoảng cách phía trái */
+    	padding-right: 35px;    /* Khoảng cách phía phải */
         border-radius: 5px;
 	box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
