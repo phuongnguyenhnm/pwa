@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>员工码</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="manifest" href="/manifest.json" />
+</head>
+<body>
+    <div class="container">
+        <!-- Phần tiêu đề -->
+        <div class="header">
+            <h2>WVN313 (Nguyễn Văn Phương)</h2>
+        </div>
+
+        <!-- Phần mã QR -->
+        <div class="qr-section">
+            <p class="time">2024-9-26 07:59:12</p>
+            <div class="qr-code">
+                <img src="qr-code.png" alt="Mã QR">
+            </div>
+            <p class="status">已生效</p>
+            <p class="timer">24:05:37</p>
+        </div>
+
+        <!-- Phần thông tin -->
+        <div class="info">
+            <p>尊敬的员工您好，您已进入企业涉密区域，出于企业安全考虑，您的手机摄像头将被禁止拍摄，感谢您的配合。</p>
+        </div>
+    </div>
+	<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js').then((registration) => {
+                console.log('Service Worker registered with scope:', registration.scope);
+            }).catch((error) => {
+                console.error('Service Worker registration failed:', error);
+            });
+        });
+    }
+	</script>
+
+</body>
+</html>
