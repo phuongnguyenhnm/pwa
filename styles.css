@@ -16,7 +16,7 @@ body {
         background-position: center; /* Đặt hình ảnh ở giữa */
         display: flex;
 	align-items: flex-start;
-        justify-content: center;
+	justify-content: flex-start;
 }
 
 .container {
