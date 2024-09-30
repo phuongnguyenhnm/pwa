@@ -34,8 +34,8 @@ body {
 
 .yellow-box {
         background-color: #EABC42;
-        padding: 15px;
-        border-radius: 10px;
+        padding: 25px;
+        border-radius: 5px;
 	box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
 
@@ -49,8 +49,8 @@ body {
 .qr-section {
     background-color: #fff;
     color: #000;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 30px;
+    border-radius: 5px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
