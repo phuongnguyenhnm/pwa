@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>员工码</title>
-    <link rel="stylesheet" href="/styles.css" />
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="manifest" href="manifest.json" />
 </head>
 <body>
     <div class="container">
@@ -29,8 +29,8 @@
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
 
-            const dateString = `${day}/${month}/${year}`;
-            const timeString = `${hours}:${minutes}:${seconds}`;
+            const dateString = `${year}-${month}-${day} `;
+            const timeString = `$ {hours}:${minutes}:${seconds}`;
             document.getElementById('currentDatetime').innerText = `${dateString} ${timeString}`;
         }
 
@@ -40,7 +40,7 @@
     </script>
 	    
             <div class="qr-code">
-                <img src="/qr-code.png" alt="Mã QR">
+                <img src="qr-code.png" alt="Mã QR">
             </div>
 		<p class="rf">刷新二维码</p>
             <p class="status">已生效</p>
