@@ -10,7 +10,7 @@ body {
     color: #fff;
     text-align: center;
 	margin: 0;
-        height: 100vh;
+        height: 1vh;
         background-image: url('bg.png'); /* Thay đường dẫn và tên hình ảnh tại đây */
         background-size: cover; /* Để hình ảnh phủ toàn bộ trang */
         background-position: center; /* Đặt hình ảnh ở giữa */
