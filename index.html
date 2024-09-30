@@ -48,7 +48,7 @@
 
 
 
-<p class="time" id="currentDatetime"></p>         
+<p class="timer" id="currentDatetime1"></p>         
   <script>
         function updateDateTime() {
             const now = new Date();
@@ -61,7 +61,7 @@
 
             const dateString = `${year}-${month}-${day} `;
             const timeString = ` ${hours}:${minutes}:${seconds}`;
-            document.getElementById('currentDatetime').innerText = `${dateString} ${timeString}`;
+            document.getElementById('currentDatetime1').innerText = `${dateString} ${timeString}`;
         }
 
         // Cập nhật ngày và giờ ngay lập tức và sau đó mỗi giây
