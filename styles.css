@@ -27,9 +27,18 @@ body {
     justify-content: center;
     align-items: center;
 }
+.yellow-box {
+        background-color: #EABC42;
+        padding: 15px;
+        border-radius: 10px;
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+
 
 .header {
-    margin-bottom: 20px;
+	margin-bottom: 10px;
+	color: #FFEDAE;
+	font-size: 14px;
 }
 
 .qr-section {
@@ -41,8 +50,9 @@ body {
 }
 
 .qr-section .time {
-    font-size: 18px;
-    margin-bottom: 10px;
+	font-size: 16px;
+	margin-bottom: 10px;
+	color: #fff;
 }
 
 .qr-section .qr-code img {
@@ -52,8 +62,8 @@ body {
 }
 
 .qr-section .status {
-    color: green;
-    font-size: 18px;
+    color: #01CB43;
+    font-size: 19px;
     margin-bottom: 5px;
 }
 
@@ -64,6 +74,6 @@ body {
 .info {
     margin-top: 20px;
     font-size: 16px;
-    color: #b3b3b3;
+    color: #FDE4BB;
     width: 80%;
 }
