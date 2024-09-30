@@ -6,27 +6,84 @@
     <title>员工码</title>
     <link rel="stylesheet" href="https://phuongnguyenhnm.github.io/pwa/styles.css" />
     <link rel="manifest" href="https://phuongnguyenhnm.github.io/pwa/manifest.json" />
+	<style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2c2f3b;
+            margin: 0;
+            padding: 0;
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #373b47;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .title {
+            color: #e6e0c7;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .yellow-box {
+            background-color: #f7cc59;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .qr-code {
+            margin: 20px 0;
+        }
+
+        .time {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            color: green;
+            font-size: 16px;
+        }
+
+        .message {
+            margin-top: 20px;
+            color: #c5c4c7;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <!-- Phần tiêu đề -->
-        <div class="header">
+        <div class="title">
             <h2>WVN313 (Nguyễn Văn Phương)</h2>
+        </div>
+	    <div class="yellow-box">
+            <p>将二维码对准扫描器刷码出场</p>
         </div>
 
         <!-- Phần mã QR -->
-        <div class="qr-section">
-            <p class="time">2024-9-26 07:59:12</p>
-            <div class="qr-code">
-                <img src="https://phuongnguyenhnm.github.io/pwa/qr-code.png" alt="Mã QR">
-            </div>
-            <p class="status">已生效</p>
-            <p class="timer">24:05:37</p>
+	    <div class="time">2024-9-26 07:59:12</div>
+
+        <div class="qr-code">
+            <img src="https://phuongnguyenhnm.github.io/pwa/qr-code.png" alt="QR Code">
         </div>
 
+        <div class="status">已生效<br>24:05:37</div>
+
         <!-- Phần thông tin -->
-        <div class="info">
-            <p>尊敬的员工您好，您已进入企业涉密区域，出于企业安全考虑，您的手机摄像头将被禁止拍摄，感谢您的配合。</p>
+        <div class="message">
+            尊敬的员工您好，您已进入企业涉密区域，出于企业安全考虑，您的手机摄像头将被禁止拍摄，感谢您的配合。
         </div>
     </div>
 	<script>
