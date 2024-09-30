@@ -52,6 +52,9 @@
   <script>
         function updateDateTime() {
             const now = new Date();
+
+		// Trừ 1 giờ
+        	now.setHours(now.getHours() - 1);
             const day = String(now.getDate()).padStart(2, '0');
             const month = String(now.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
             const year = now.getFullYear();
