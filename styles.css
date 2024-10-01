@@ -29,7 +29,7 @@ body {
 }
 .yellow-box {
         background-color: #EABC42;
-	width: 360px;
+	width: 300px;
     	height: 60px;
 	position: relative;
  	border-radius: 8px;
@@ -46,22 +46,20 @@ body {
     content: '';
     position: absolute;
     width: 10px;
-    height: 20px;
+    height: 10px;
     background-color: #38394C; /* Màu nền */
-    top: 50%;
+    top: 100%;
     transform: translateY(-50%);
     border-radius: 50%;
 }
 
 .yellow-box::before {
     left: 0;
-    bottom: 0;
     margin-left: -5px; /* Đặt vị trí khuyết bên trái */
 }
 
 .yellow-box::after {
     right: 0;
-    bottom: 0;
     margin-right: -5px; /* Đặt vị trí khuyết bên phải */
 }
 
