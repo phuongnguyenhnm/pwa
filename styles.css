@@ -55,11 +55,13 @@ body {
 
 .yellow-box::before {
     left: 0;
+    bottom: 0;
     margin-left: -5px; /* Đặt vị trí khuyết bên trái */
 }
 
 .yellow-box::after {
     right: 0;
+    bottom: 0;
     margin-right: -5px; /* Đặt vị trí khuyết bên phải */
 }
 
