@@ -30,14 +30,12 @@ body {
 .yellow-box {
         background-color: #EABC42;
 	width: 290px;
-    	height: 60px;
+    	height: 80px;
 	position: relative;
  	border-radius: 8px;
  	display: flex;
  	justify-content: center;
     	align-items: center;
-        padding-top: 22px;     /* Khoảng cách phía trên */
-  	padding-bottom: 22px;  /* Khoảng cách phía dưới */
         border-radius: 5px;
 	box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
