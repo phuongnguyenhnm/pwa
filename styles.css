@@ -135,3 +135,18 @@ body {
     color: #FDE4BB;
     width: 80%;
 }
+
+.rotate {
+            width: 100px; /* Bạn có thể điều chỉnh kích thước của SVG */
+            height: 100px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
