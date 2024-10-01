@@ -7,14 +7,7 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="manifest" href="manifest.json" />
 </head>
-
-<img src="download.svg" alt="Loading..." class="rotate" id="loading">
-<div id="content">  
-
-
-
 <body>
- 
     <div class="container">
         <!-- Phần tiêu đề -->
         <div class="header">
@@ -106,27 +99,5 @@
     }
 	</script>
 
-
-
 </body>
-</div>
-
-
-
-
-<script>
-        // Ẩn toàn bộ nội dung trong 3 giây và hiển thị hình ảnh loading.svg
-        window.onload = function() {
-            // Hiển thị hình ảnh loading trong 3 giây
-            setTimeout(function() {
-                // Ẩn hình ảnh loading
-                document.getElementById("loading").style.display = "none";
-                // Hiển thị nội dung của trang
-                document.getElementById("content").style.display = "block";
-            }, 3000); // Thời gian chờ 3 giây
-        };
-    </script>
-
-
-
 </html>
