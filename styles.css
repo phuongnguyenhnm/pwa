@@ -43,8 +43,8 @@ body {
 .yellow-box::after {
     content: '';
     position: absolute;
-    width: 12px;
-    height: 12px;
+    width: 11px;
+    height: 11px;
     background-color: #38394C; /* Màu nền */
     top: 100%;
     transform: translateY(-50%);
