@@ -137,8 +137,11 @@ body {
 }
 
 .rotate {
-            width: 100px; /* Bạn có thể điều chỉnh kích thước của SVG */
-            height: 100px;
+            width: 70px; /* Bạn có thể điều chỉnh kích thước của SVG */
+            height: 70px;
+            display: flex;
+ 	        justify-content: center;
+    	        align-items: center;
             animation: spin 2s linear infinite;
         }
 
