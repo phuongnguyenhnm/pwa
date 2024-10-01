@@ -31,7 +31,7 @@ body {
 .container {
     width: 100%;
     height: 100vh;
-    padding-top: 50px;
+    padding-top: 350px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
