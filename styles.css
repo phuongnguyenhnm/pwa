@@ -142,10 +142,10 @@ body {
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh; /* Chiều cao toàn bộ màn hình */
-            margin: 0; /* Bỏ margin */
+            width: 240px;
+	    height: 240px;
+            margin-bottom: 6px;
             font-family: Arial, sans-serif; /* Font chữ */
         }
         #qrcode {
-            margin-bottom: 20px; /* Khoảng cách dưới mã QR */
         }
