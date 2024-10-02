@@ -23,10 +23,21 @@ body {
         background-image: url('bg.png'); /* Thay đường dẫn và tên hình ảnh tại đây */
         background-size: cover; /* Để hình ảnh phủ toàn bộ trang */
         background-position: center; /* Đặt hình ảnh ở giữa */
-        display: flex;
+        display: ;
 	align-items: flex-start;
 	justify-content: flex-start;
 }
+#loader {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: spin 1s linear infinite; /* Hiệu ứng xoay tròn */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
 .container {
     width: 100%;
