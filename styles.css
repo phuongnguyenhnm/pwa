@@ -135,3 +135,17 @@ body {
     color: #FDE4BB;
     width: 80%;
 }
+
+
+.qr-code {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Chiều cao toàn bộ màn hình */
+            margin: 0; /* Bỏ margin */
+            font-family: Arial, sans-serif; /* Font chữ */
+        }
+        #qrcode {
+            margin-bottom: 20px; /* Khoảng cách dưới mã QR */
+        }
