@@ -40,9 +40,10 @@
         updateDateTime();
         setInterval(updateDateTime, 1000);	  
     </script>
-	    
-            <p class="qr-code" id="qrcode"></p>
-	    <p class="rf" id="generate">刷新二维码</p>
+	    <div class="qr-code">
+	   	 <div id="qrcode"></div>
+	  	 <p class="rf" id="generate">刷新二维码</p>
+            </div>
 		<script>
         function generateRandomString(length = 100) {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
