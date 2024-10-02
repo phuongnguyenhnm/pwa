@@ -101,7 +101,7 @@ body {
 	color: #;
 }
 
-.qr-section .qr-code img {
+.qr-section .qr-code {
     width: 240px;
     height: 240px;
     margin-bottom: 6px;
