@@ -142,10 +142,13 @@ body {
             flex-direction: column;
             align-items: center;
             justify-content: center;
+	border-radius: 5px;
+	position: relative;
             width: 240px;
 	    height: 240px;
 	    margin: 0;
             margin-bottom: 6px;
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
             font-family: Arial, sans-serif; /* Font chữ */
         }
         #qrcode {
