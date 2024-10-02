@@ -10,7 +10,7 @@
     <script src="jquery.qrcode.min.js"></script>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="content">
         <!-- Phần tiêu đề -->
         <div class="header">
             <h2>WVN313(Nguyễn Văn Phương)</h2>
@@ -40,9 +40,9 @@
         updateDateTime();
         setInterval(updateDateTime, 1000);	  
     </script>
-	<p class="qr-code">
+	<div class="qr-code">
 	    <div id="qrcode"></div>
-	</p>
+	</div>
 	  <p class="rf" id="generate">刷新二维码</p>
             
 		<script>
@@ -130,6 +130,17 @@
             });
         });
     }
+	</script>
+	    <div id="loader">
+        <img src="download.svg" alt="Đang tải...">
+  	    </div>
+	<script>
+        // Ẩn nội dung và hiển thị loader trong 3 giây
+        setTimeout(() => {
+            document.getElementById('loader').style.display = 'none'; // Ẩn loader
+            document.getElementById('content').style.display = 'block'; // Hiện nội dung
+            document.body.style.display = 'block'; // Hiện body
+        }, 3000);
 	</script>
 
 </body>
