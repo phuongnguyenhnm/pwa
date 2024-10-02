@@ -23,7 +23,7 @@ body {
         background-image: url('bg.png'); /* Thay đường dẫn và tên hình ảnh tại đây */
         background-size: cover; /* Để hình ảnh phủ toàn bộ trang */
         background-position: center; /* Đặt hình ảnh ở giữa */
-        display: ;
+        display: none;
 	align-items: flex-start;
 	justify-content: flex-start;
 }
