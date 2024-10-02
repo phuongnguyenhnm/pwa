@@ -110,6 +110,15 @@ body {
     margin-bottom: 6px;
 }
 
+.qr-section .qr-code {
+    width: 240px;
+    height: 240px;
+	display: flex;
+ 	justify-content: center;
+    	align-items: center;
+    margin-bottom: 6px;
+}
+
 
 .qr-section .status {
     color: #01CB43;
