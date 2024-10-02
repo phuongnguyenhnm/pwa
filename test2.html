@@ -18,7 +18,7 @@
     <div id="qrcode"></div>
 
     <script>
-        function generateRandomString(length = 100) { // Thay đổi độ dài chuỗi ở đây
+        function generateRandomString(length = 100) {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let result = '';
             for (let i = 0; i < length; i++) {
@@ -27,7 +27,7 @@
             return result;
         }
 
-        $('#generate').click(function() {
+        function createQRCode() {
             const randomData = generateRandomString(100); // Tạo chuỗi ngẫu nhiên 100 ký tự
             $('#qrcode').empty(); // Xóa mã QR cũ
             $('#qrcode').qrcode({
@@ -38,7 +38,15 @@
                 ecLevel: 'H' // Mức sửa lỗi H
             });
             console.log(`Mã QR đã được tạo với dữ liệu: ${randomData}`);
+        }
+
+        // Gọi hàm tạo mã QR khi trang được tải
+        $(document).ready(function() {
+            createQRCode();
         });
+
+        // Vẫn giữ nút để tạo mã QR mới nếu cần
+        $('#generate').click(createQRCode);
     </script>
 </body>
 </html>
