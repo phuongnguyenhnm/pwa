@@ -6,6 +6,8 @@
     <title>员工码</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="manifest" href="manifest.json" />
+    <script src="jquery.min.js"></script>
+    <script src="jquery.qrcode.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -39,10 +41,39 @@
         setInterval(updateDateTime, 1000);	  
     </script>
 	    
-            <div class="qr-code">
-                <img src="qr-code.png" alt="Mã QR">
-            </div>
-		<p class="rf">刷新二维码</p>
+            <div class="qr-code" id="qrcode"></div>
+		<script>
+        function generateRandomString(length = 100) {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+
+        function createQRCode() {
+            const randomData = generateRandomString(100); // Tạo chuỗi ngẫu nhiên 100 ký tự
+            $('#qrcode').empty(); // Xóa mã QR cũ
+            $('#qrcode').qrcode({
+                text: randomData,
+                width: 240, // Kích thước mã QR
+                height: 240,
+                render: 'image',
+                ecLevel: 'H' // Mức sửa lỗi H
+            });
+            console.log(`Mã QR đã được tạo với dữ liệu: ${randomData}`);
+        }
+
+        // Gọi hàm tạo mã QR khi trang được tải
+        $(document).ready(function() {
+            createQRCode();
+        });
+
+        // Vẫn giữ nút để tạo mã QR mới nếu cần
+        $('#generate').click(createQRCode);
+    </script>
+	    <p class="rf" id="generate">刷新二维码</p>
             <p class="status">已生效</p>
 
 
