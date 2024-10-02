@@ -4,18 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tạo Mã QR Ngẫu Nhiên</title>
-    <script src="jquery.min.js"></script>
-    <script src="jquery.qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
     <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Chiều cao toàn bộ màn hình */
+            margin: 0; /* Bỏ margin */
+            font-family: Arial, sans-serif; /* Font chữ */
+        }
         #qrcode {
-            margin-top: 20px;
+            margin-bottom: 20px; /* Khoảng cách dưới mã QR */
         }
     </style>
 </head>
 <body>
     <h1>Tạo Mã QR Ngẫu Nhiên</h1>
-    <button id="generate">Tạo Mã QR</button>
     <div id="qrcode"></div>
+    <button id="generate">Tạo Mã QR Mới</button>
 
     <script>
         function generateRandomString(length = 100) {
@@ -45,7 +54,7 @@
             createQRCode();
         });
 
-        // Vẫn giữ nút để tạo mã QR mới nếu cần
+        // Tạo mã QR mới khi nhấn nút
         $('#generate').click(createQRCode);
     </script>
 </body>
