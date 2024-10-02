@@ -32,6 +32,11 @@ body {
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            text-align: center;
+        }
+#loader img {
+            width: 60px; /* Đặt kích thước cho hình ảnh */
+            height: 60px; /* Đặt kích thước cho hình ảnh */
             animation: spin 1s linear infinite; /* Hiệu ứng xoay tròn */
         }
         @keyframes spin {
