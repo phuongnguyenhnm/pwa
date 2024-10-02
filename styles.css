@@ -144,6 +144,7 @@ body {
             justify-content: center;
             width: 240px;
 	    height: 240px;
+	    margin: 0;
             margin-bottom: 6px;
             font-family: Arial, sans-serif; /* Font chữ */
         }
