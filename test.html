@@ -6,20 +6,6 @@
     <title>员工码</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="manifest" href="manifest.json" />
-
-
-<meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Mã QR Ngẫu Nhiên</title>
-    <script src="jquery.min.js"></script>
-    <script src="jquery.qrcode.min.js"></script>
-    <style>
-        #qrcode {
-            margin-top: 20px;
-        }
-    </style>
-
-	
 </head>
 <body>
     <div class="container">
@@ -112,35 +98,6 @@
         });
     }
 	</script>
-
-
-<h1>Tạo Mã QR Ngẫu Nhiên</h1>
-    <button id="generate">Tạo Mã QR</button>
-    <div id="qrcode"></div>
-
-    <script>
-        function generateRandomString(length = 10) {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let result = '';
-            for (let i = 0; i < length; i++) {
-                result += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            return result;
-        }
-
-        $('#generate').click(function() {
-            const randomData = generateRandomString(30); // Độ dài chuỗi ngẫu nhiên
-            $('#qrcode').empty(); // Xóa mã QR cũ
-            $('#qrcode').qrcode({
-                text: randomData,
-                width: 256, // Kích thước mã QR
-                height: 256,
-                render: 'image',
-                ecLevel: 'H' // Mức sửa lỗi H
-            });
-            console.log(`Mã QR đã được tạo với dữ liệu: ${randomData}`);
-        });
-    </script>
 
 </body>
 </html>
