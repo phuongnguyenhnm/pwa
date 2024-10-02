@@ -41,8 +41,8 @@
         setInterval(updateDateTime, 1000);	  
     </script>
 	    
-		<button id="generate">Tạo Mã QR</button>
             <div class="qr-code" id="qrcode"></div>
+	    <p class="rf" id="generate">刷新二维码</p>
 		<script>
         function generateRandomString(length = 100) {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -74,7 +74,6 @@
         // Vẫn giữ nút để tạo mã QR mới nếu cần
         $('#generate').click(createQRCode);
     </script>
-	    <p class="rf" id="generate">刷新二维码</p>
             <p class="status">已生效</p>
 
 
