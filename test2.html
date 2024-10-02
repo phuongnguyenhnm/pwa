@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tạo Mã QR Ngẫu Nhiên</title>
-    <script src="jquery.min.js"></script>
-    <script src="jquery.qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
     <style>
         #qrcode {
             margin-top: 20px;
@@ -18,7 +18,7 @@
     <div id="qrcode"></div>
 
     <script>
-        function generateRandomString(length = 100) {
+        function generateRandomString(length = 100) { // Thay đổi độ dài chuỗi ở đây
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let result = '';
             for (let i = 0; i < length; i++) {
@@ -28,7 +28,7 @@
         }
 
         $('#generate').click(function() {
-            const randomData = generateRandomString(30); // Độ dài chuỗi ngẫu nhiên
+            const randomData = generateRandomString(100); // Tạo chuỗi ngẫu nhiên 100 ký tự
             $('#qrcode').empty(); // Xóa mã QR cũ
             $('#qrcode').qrcode({
                 text: randomData,
