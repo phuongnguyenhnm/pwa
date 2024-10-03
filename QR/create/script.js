@@ -13,8 +13,10 @@ function generateCode() {
         const imgTag = qr.createImgTag(4);
         resultDiv.innerHTML = imgTag;
     } else if (codeType === "datamatrix") {
-        // Cần thêm thư viện để tạo DataMatrix, ví dụ: sử dụng qrious hoặc thư viện khác
-        // Đây chỉ là ví dụ, bạn cần tìm thư viện thích hợp
+        const datamatrix = new DataMatrix();
+        const imgData = datamatrix.encode(inputText);
+        const imgTag = `<img src="${imgData}"/>`;
+        resultDiv.innerHTML = imgTag;
     } else if (codeType === "barcode") {
         const canvas = document.createElement("canvas");
         JsBarcode(canvas, inputText, { format: "CODE128" });
