@@ -7,22 +7,14 @@ function generateCode() {
     resultDiv.innerHTML = '';
 
     if (codeType === "qrcode") {
-        new QRCode(resultDiv, {
-            text: inputText,
-            width: 128,
-            height: 128,
-        });
+        const qr = qrcode(0, 'L');
+        qr.addData(inputText);
+        qr.make();
+        const imgTag = qr.createImgTag(4);
+        resultDiv.innerHTML = imgTag;
     } else if (codeType === "datamatrix") {
-        const canvas = document.createElement("canvas");
-        const qrCode = new QRCode(canvas, {
-            text: inputText,
-            width: 128,
-            height: 128,
-            typeNumber: 1,
-            correctLevel: QRCode.CorrectLevel.L,
-            render: 'canvas'
-        });
-        resultDiv.appendChild(canvas);
+        // Cần thêm thư viện để tạo DataMatrix, ví dụ: sử dụng qrious hoặc thư viện khác
+        // Đây chỉ là ví dụ, bạn cần tìm thư viện thích hợp
     } else if (codeType === "barcode") {
         const canvas = document.createElement("canvas");
         JsBarcode(canvas, inputText, { format: "CODE128" });
