@@ -1,6 +1,6 @@
 {
-    "name": "员工码",
-    "short_name": "员工码",
+    "name": "Trình Tạo Mã",
+    "short_name": "Trình Tạo Mã",
     "start_url": "index.html",
     "display": "standalone",
     "background_color": "#ffffff",
