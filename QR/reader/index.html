@@ -8,10 +8,12 @@
 </head>
 <body>
     <h1>QR & Barcode Scanner</h1>
+    <input type="file" id="file-input" accept="image/*">
     <div id="reader" style="width: 500px; height: 500px;"></div>
     <script>
         function onScanSuccess(decodedText, decodedResult) {
             console.log(`Code matched = ${decodedText}`, decodedResult);
+            alert(`Scanned code: ${decodedText}`);
         }
 
         var html5QrCode = new Html5Qrcode("reader");
@@ -24,6 +26,22 @@
             onScanSuccess
         ).catch((err) => {
             console.log(`Error: ${err}`);
+        });
+
+        document.getElementById('file-input').addEventListener('change', function(event) {
+            var file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            html5QrCode.scanFile(file, true)
+                .then(decodedText => {
+                    console.log(decodedText);
+                    alert(`Scanned code from file: ${decodedText}`);
+                })
+                .catch(err => {
+                    console.log(`Error scanning file. Reason: ${err}`);
+                });
         });
     </script>
 </body>
