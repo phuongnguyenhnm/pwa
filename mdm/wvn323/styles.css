@@ -43,6 +43,7 @@ body {
     	height: 70px;
 	position: relative;
  	border-radius: 8px;
+        text-align: left;
  	display: flex;
  	justify-content: center;
     	align-items: center;
