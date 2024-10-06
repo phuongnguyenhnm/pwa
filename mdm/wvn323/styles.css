@@ -144,5 +144,5 @@ body {
     color: #FDE4BB;
     width: 80%;
     text-align: left; /* Căn trái cho văn bản */
-    padding-left: 30px; /* Lùi đầu dòng 30px */
+    text-indent: 30px; /* Lùi đầu dòng 30px */
 }
