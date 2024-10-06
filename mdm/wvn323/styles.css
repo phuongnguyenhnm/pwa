@@ -46,9 +46,14 @@ body {
  	display: flex;
  	justify-content: flex-start;
     	align-items: center;
+	padding-left: 10px;
         border-radius: 5px;
 	box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
+.yellow-box p {
+    text-align: left; /* Căn trái cho văn bản bên trong .yellow-box */
+    margin: 0; /* Loại bỏ margin để không có khoảng cách không mong muốn */
+}
 .yellow-box::before,
 .yellow-box::after {
     content: '';
