@@ -1,6 +1,6 @@
 {
-    "name": "员工码",
-    "short_name": "员工码",
+    "name": "工作空间",
+    "short_name": "工作空间",
     "start_url": "index.html",
     "display": "standalone",
     "background_color": "#ffffff",
