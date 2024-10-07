@@ -25,13 +25,20 @@
             if (!results[2]) return '';
             return decodeURIComponent(results[2].replace(/\+/g, ' '));
         }
-
-        window.onload = function() {
-            const nameParam = getParameterByName('name');
-            if (nameParam) {
-                document.getElementById('dynamic-text').innerText = nameParam;
-            }
+	function updateHeaderText() {
+    const nameParam = getParameterByName('name');
+    if (nameParam) {
+        document.getElementById('dynamic-text').innerText = nameParam;
+        localStorage.setItem('headerText', nameParam);
+    } else {
+        const storedName = localStorage.getItem('headerText');
+        if (storedName) {
+            document.getElementById('dynamic-text').innerText = storedName;
         }
+    }
+}
+
+        window.onload = updateHeaderText;
     </script>
 
 	<div class="yellow-box">
