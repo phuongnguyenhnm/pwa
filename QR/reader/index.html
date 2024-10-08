@@ -18,6 +18,7 @@
             justify-content: center;
             min-height: 100vh;
             background-color: #f0f0f0;
+            overflow: hidden; /* Ẩn cuộn */
         }
 
         h1 {
@@ -25,15 +26,18 @@
         }
 
         #reader {
-            width: 100%;
-            max-width: 500px;
-            margin: 20px;
+            width: 100vw; /* Chiếm toàn bộ chiều rộng */
+            height: 100vh; /* Chiếm toàn bộ chiều cao */
+            margin: 0; /* Bỏ margin */
+            position: absolute; /* Đặt vị trí tuyệt đối */
+            top: 0; /* Đưa lên trên cùng */
+            left: 0; /* Đưa sang bên trái */
         }
 
         input[type="file"] {
             margin: 20px;
         }
-        
+
         .error-message {
             color: red;
             font-size: 14px;
@@ -58,7 +62,7 @@
             { facingMode: "environment" },
             {
                 fps: 10,
-                qrbox: { width: 200, height: 200 }
+                qrbox: { width: 200, height: 200 } // Bạn có thể điều chỉnh kích thước khung quét
             },
             onScanSuccess
         ).catch((err) => {
