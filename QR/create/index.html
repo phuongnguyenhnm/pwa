@@ -6,6 +6,47 @@
     <title>Trình Tạo Mã</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Căn giữa theo chiều ngang */
+            justify-content: center; /* Căn giữa theo chiều dọc */
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            text-align: center; /* Căn giữa nội dung văn bản */
+        }
+
+        h1 {
+            margin: 20px;
+        }
+
+        #inputText {
+            font-size: 16px;
+            margin-bottom: 10px;
+            width: 100%; /* Chiếm toàn bộ chiều ngang */
+            max-width: 500px; /* Giới hạn chiều rộng tối đa */
+        }
+
+        #codeType, #generateCodeButton {
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: block;
+            width: 100%; /* Chiếm toàn bộ chiều ngang */
+            max-width: 500px; /* Giới hạn chiều rộng tối đa */
+        }
+
+        #result img {
+            display: block;
+            margin: 0 auto;
+            width: 100vw; /* Đặt chiều rộng của hình ảnh là 100% chiều rộng của cửa sổ */
+            height: auto;
+        }
+    </style>
 </head>
 <body>
     <h1>Trình Tạo Mã</h1>
@@ -19,7 +60,7 @@
         <option value="code39">Code 39</option>
     </select>
     
-    <button onclick="generateCode()">Tạo Mã</button>
+    <button id="generateCodeButton" onclick="generateCode()">Tạo Mã</button>
     
     <div id="result"></div>
 
