@@ -20,11 +20,16 @@ h1 {
 #inputText {
     font-size: 16px;        
     margin-bottom: 10px;
+    width: 100%; /* Chiếm toàn bộ chiều ngang */
+    max-width: 500px; /* Giới hạn chiều rộng tối đa */
         }
 
 #codeType, #generateCodeButton {
             margin-bottom: 10px;
             display: block;
+            font-size: 16px;
+            width: 100%; /* Chiếm toàn bộ chiều ngang */
+            max-width: 500px; /* Giới hạn chiều rộng tối đa */
         }
 
 #result img {
