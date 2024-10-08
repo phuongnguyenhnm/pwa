@@ -16,11 +16,12 @@ h1 {
             margin: 20px;
         }
 
-        #inputText {
-            margin-bottom: 10px;
+#inputText {
+    font-size: 16px;        
+    margin-bottom: 10px;
         }
 
-        #codeType, #generateCodeButton {
+#codeType, #generateCodeButton {
             margin-bottom: 10px;
             display: block;
         }
