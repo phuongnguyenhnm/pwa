@@ -1,6 +1,6 @@
 {
-    "name": "员工码",
-    "short_name": "员工码",
+    "name": "Reader",
+    "short_name": "Reader",
     "start_url": "index.html",
     "display": "standalone",
     "background_color": "#ffffff",
