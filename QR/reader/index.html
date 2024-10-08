@@ -27,7 +27,7 @@
 
         #reader {
             width: 100vw; /* Chiếm toàn bộ chiều rộng */
-            height: 100vh; /* Chiếm toàn bộ chiều cao */
+            /*height: 100vh; /* Chiếm toàn bộ chiều cao */
             margin: 0; /* Bỏ margin */
             position: absolute; /* Đặt vị trí tuyệt đối */
             top: 0; /* Đưa lên trên cùng */
@@ -62,7 +62,7 @@
             { facingMode: "environment" },
             {
                 fps: 10,
-                qrbox: { width: 350, height: 400 } // Bạn có thể điều chỉnh kích thước khung quét
+                qrbox: { width: 350, height: 450 } // Bạn có thể điều chỉnh kích thước khung quét
             },
             onScanSuccess
         ).catch((err) => {
