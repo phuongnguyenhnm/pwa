@@ -33,6 +33,7 @@
         input[type="file"] {
             margin: 20px;
         }
+        
         .error-message {
             color: red;
             font-size: 14px;
@@ -44,10 +45,12 @@
     <h1>QR & Barcode Scanner</h1>
     <input type="file" id="file-input" accept="image/*">
     <div id="reader"></div>
+    <div class="error-message" id="error-message"></div>
+    
     <script>
         function onScanSuccess(decodedText, decodedResult) {
-            console.log(`Code matched = ${decodedText}`, decodedResult);
-            alert(`Scanned code: ${decodedText}`);
+            console.log(`Mã đã khớp = ${decodedText}`, decodedResult);
+            alert(`Mã đã quét: ${decodedText}`);
         }
 
         var html5QrCode = new Html5Qrcode("reader");
@@ -55,11 +58,12 @@
             { facingMode: "environment" },
             {
                 fps: 10,
-                qrbox: { width: 200, height: 200 }  // Tăng kích thước khung quét lên 400x400
+                qrbox: { width: 200, height: 200 }
             },
             onScanSuccess
         ).catch((err) => {
-            console.log(`Error: ${err}`);
+            console.log(`Lỗi: ${err}`);
+            document.getElementById('error-message').innerText = `Lỗi: ${err}`;
         });
 
         document.getElementById('file-input').addEventListener('change', function(event) {
@@ -71,42 +75,11 @@
             html5QrCode.scanFile(file, true)
                 .then(decodedText => {
                     console.log(decodedText);
-                    alert(`Scanned code from file: ${decodedText}`);
+                    alert(`Mã đã quét từ tệp: ${decodedText}`);
                 })
                 .catch(err => {
-                    console.log(`Error scanning file. Reason: ${err}`);
-                    
-        function onScanSuccess(decodedText, decodedResult) {
-            console.log(`Code matched = ${decodedText}`, decodedResult);
-            alert(`Scanned code: ${decodedText}`);
-        }
-
-        var html5QrCode = new Html5Qrcode("reader");
-        html5QrCode.start(
-            { facingMode: "environment" },
-            {
-                fps: 10,
-                qrbox: { width: 180, height: 180 }
-            },
-            onScanSuccess
-        ).catch((err) => {
-            console.log(`Error: ${err}`);
-            document.getElementById('error-message').innerText = `Error: ${err}`;
-        });
-
-        document.getElementById('file-input').addEventListener('change', function(event) {
-            var file = event.target.files[0];
-            if (!file) {
-                return;
-            }
-
-            html5QrCode.scanFile(file, true)
-                .then(decodedText => {
-                    console.log(decodedText);
-                    alert(`Scanned code from file: ${decodedText}`);
-                })
-                .catch(err => {
-                    console.log(`Error scanning file. Reason: ${err}`);
+                    console.log(`Lỗi quét tệp. Lý do: ${err}`);
+                    document.getElementById('error-message').innerText = `Lỗi quét tệp: ${err}`;
                 });
         });
     </script>
