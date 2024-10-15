@@ -13,7 +13,25 @@
     <div class="container">
         <!-- Phần tiêu đề -->
         <div class="header">
-            <h2>WVN313(Nguyễn Văn Phương)</h2>
+            <h2>
+		    <script>
+    $(document).ready(function() {
+        // Hàm để đọc nội dung từ file name.txt
+        $.ajax({
+            url: 'name.txt',
+            dataType: 'text',
+        }).done(function(data) {
+            // Cập nhật nội dung tiêu đề
+            $('.header h2').text(data.trim());
+        }).fail(function() {
+            console.error('Không thể tải file name.txt');
+        });
+
+        // Các hàm khác của bạn...
+        createQRCode();
+    });
+			</script>
+	    </h2>
         </div>
 	<div class="yellow-box">
             <p>将二维码对准扫描器刷码出场</p>
