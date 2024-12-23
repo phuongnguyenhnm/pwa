@@ -119,7 +119,7 @@ body {
 
 .qr-section .status {
     color: #01CB43;
-    font-size: 18px;
+    font-size: 19px;
     margin-bottom: 5px;
 	animation: blink 2s steps(1) infinite;
         }
