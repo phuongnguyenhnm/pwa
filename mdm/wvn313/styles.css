@@ -100,7 +100,7 @@ body {
 
 
 .qr-section .time {
-	font-size: 16px;
+	font-size: 15px;
 	margin-bottom: 6px;
 	color: #000;
 }
@@ -135,7 +135,7 @@ body {
 
 .qr-section .timer {
     color: #01CB43;
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 5px;
 }
 
