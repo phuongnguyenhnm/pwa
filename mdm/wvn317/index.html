@@ -13,7 +13,25 @@
     <div class="container">
         <!-- Phần tiêu đề -->
         <div class="header">
-            <h2>WVN317(武光辉)</h2>
+            <h2>
+		    <script>
+    $(document).ready(function() {
+        // Hàm để đọc nội dung từ file name.txt
+        $.ajax({
+            url: 'name.txt',
+            dataType: 'text',
+        }).done(function(data) {
+            // Cập nhật nội dung tiêu đề
+            $('.header h2').text(data.trim());
+        }).fail(function() {
+            console.error('Không thể tải file name.txt');
+        });
+
+        // Các hàm khác của bạn...
+        createQRCode();
+    });
+			</script>
+	    </h2>
         </div>
 	<div class="yellow-box">
             <p>将二维码对准扫描器刷码出场</p>
@@ -31,9 +49,9 @@
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
 
-            const dateString = `${year}-${month}-${day}`;
+            const dateString = `${year}-${month}-${day}  `;
             const timeString = `${hours}:${minutes}:${seconds}`;
-            document.getElementById('currentDatetime').innerText = `${dateString}   ${timeString}`;
+            document.getElementById('currentDatetime').innerText = `${dateString}             ${timeString}`;
         }
 
         // Cập nhật ngày và giờ ngay lập tức và sau đó mỗi giây
@@ -77,38 +95,7 @@
         // Vẫn giữ nút để tạo mã QR mới nếu cần
         $('#generate').click(createQRCode);
     </script>
-            <p class="status">已生效</p>
-
-
-
-
-<p class="timer" id="currentDatetime1"></p>         
-  <script>
-        function updateDateTime() {
-            const now = new Date();
-
-		// Cộng 20 giờ
-        	now.setHours(now.getHours() + 20);
-		// Trừ 20 phút
-        	now.setMinutes(now.getMinutes() - 20);
-		// Trừ 20 giây
-       		now.setSeconds(now.getSeconds() - 20);
-            const day = String(now.getDate()).padStart(2, '0');
-            const month = String(now.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
-            const year = now.getFullYear();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-
-            const dateString = `${year}-${month}-${day} `;
-            const timeString = `1${hours}:${minutes}:${seconds}`;
-            document.getElementById('currentDatetime1').innerText = `${timeString}`;
-        }
-
-        // Cập nhật ngày và giờ ngay lập tức và sau đó mỗi giây
-        updateDateTime();
-        setInterval(updateDateTime, 1000);	  
-    </script>
+           
 
 
 		
@@ -133,5 +120,19 @@
     }
 	</script>
 
+
+	<script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
