@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101418">
+<title>Dịch Thông Minh – Việt ↔ Trung</title>
+<style>
+:root{
+  color-scheme:dark;--bg:#101418;--panel:#192127;--panel2:#202b33;--panel3:#27343d;
+  --line:#34434d;--text:#edf3f6;--muted:#9aabb5;--accent:#8ecbff;--accent2:#c4e5ff;
+  --danger:#ff9a9a;--good:#8fe0b0;--radius:20px
+}
+*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;min-height:100vh;min-height:100dvh;background:radial-gradient(ellipse at 50% -15%,#1d3544 0,transparent 55%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+.app{width:min(100%,760px);min-height:100vh;min-height:100dvh;margin:auto;padding:12px 16px max(18px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:13px}
+header{display:flex;align-items:center;justify-content:space-between;padding:4px 2px}
+.brand{text-align:center}.brand strong{font-size:19px;letter-spacing:.2px}.brand small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.iconbtn{width:42px;height:42px;border:1px solid transparent;border-radius:50%;background:transparent;color:var(--text);font-size:20px}.iconbtn:hover{background:var(--panel2);border-color:var(--line)}
+.status{font-size:11px;color:var(--muted);padding:5px 9px;border:1px solid var(--line);border-radius:99px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--danger);margin-left:5px}.dot.ready{background:var(--good)}
+.card{background:linear-gradient(160deg,#1c272e,#172027);border:1px solid #ffffff12;border-radius:var(--radius);padding:15px;box-shadow:0 12px 35px #0002}
+.langrow{display:grid;grid-template-columns:minmax(0,1fr) 42px minmax(0,1fr);align-items:center;gap:8px;margin-bottom:12px}
+.lang{width:100%;min-width:0;border:1px solid var(--line);border-radius:13px;padding:11px 8px;background:var(--panel2);color:var(--text);font-size:14px}
+.swap{width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:var(--panel3);color:var(--accent);font-size:20px}
+.inputwrap{position:relative}
+textarea{width:100%;min-height:126px;resize:vertical;border:0;outline:0;background:transparent;color:var(--text);font-size:19px;line-height:1.5;padding:8px 3px}
+textarea::placeholder{color:#81929c}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.tools,.actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.btn{border:1px solid var(--line);border-radius:99px;background:var(--panel2);color:var(--text);padding:9px 13px;font-size:13px}
+.btn:hover{border-color:#607988}.btn.primary{background:var(--accent);border-color:transparent;color:#08243a;font-weight:700}.btn.ghost{background:transparent}.btn.selected{background:#24465a;border-color:#4e7891;color:var(--accent2)}
+.small{font-size:11px;color:var(--muted)}
+.error{display:none;padding:11px 13px;border:1px solid #75464b;background:#3b2025;color:#ffc1c1;border-radius:13px;font-size:13px;line-height:1.5;overflow-wrap:anywhere;white-space:pre-wrap}
+.panel{display:none;flex-direction:column;gap:10px;padding:12px;border:1px solid var(--line);border-radius:15px;background:#111a20}
+.stage{height:180px;border:1px dashed #60717b;border-radius:11px;overflow:hidden;background:#0c1115;touch-action:none}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+.preview{display:none;align-items:center;justify-content:center;min-height:90px;max-height:230px;overflow:hidden;border-radius:12px;background:#0d1419}
+.preview img{display:block;max-width:100%;max-height:220px;object-fit:contain}
+.result{display:none}
+.result-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.result-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700}
+.result-text{font-size:23px;line-height:1.48;font-weight:650;white-space:pre-wrap;overflow-wrap:anywhere}
+.pinyin{margin-top:9px;color:var(--accent);font-size:14px;line-height:1.5;overflow-wrap:anywhere}
+.explain{display:none;margin-top:13px;padding:12px;border-left:3px solid var(--accent);background:#142631;border-radius:9px;font-size:13px;line-height:1.6;white-space:pre-wrap}
+.extra{display:none;margin-top:10px;gap:8px;flex-direction:column}
+.extra-item{padding:10px 12px;background:var(--panel2);border-radius:11px;font-size:13px;line-height:1.5;white-space:pre-wrap}
+.extra-item b{color:var(--accent2)}
+.spinner{display:none;width:14px;height:14px;border:2px solid #092b4544;border-top-color:#092b45;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bottom{margin-top:auto;display:flex;flex-direction:column;gap:12px;padding-top:5px}
+.main-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.main-actions button{padding:13px 10px}
+.dock{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;justify-items:center;padding:5px 5px 2px}
+.dockbtn{display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:transparent;color:var(--muted);font-size:11px}
+.dockcircle{width:48px;height:48px;border-radius:17px;background:var(--panel3);display:grid;place-items:center;font-size:21px;color:var(--accent)}
+.dockbtn.active .dockcircle{background:#583238;color:#ffb8b8}
+.mic{width:70px;height:70px;border:0;border-radius:23px;background:var(--accent);color:#08243a;font-size:26px;box-shadow:0 8px 25px #8ecbff22}
+.mic.recording{background:#ff8c8c;color:#351010;border-radius:50%;animation:pulse 1.1s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 13px #ff8c8c00}}
+.live{display:none;gap:11px}
+.feed{display:flex;flex-direction:column;gap:9px;max-height:280px;min-height:115px;overflow:auto;padding:10px;background:#10171c;border:1px solid var(--line);border-radius:13px}
+.bubble{max-width:90%;padding:10px 12px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.bubble.left{align-self:flex-start;background:var(--panel2)}.bubble.right{align-self:flex-end;background:#1d4055}
+.bubble small{display:block;color:var(--muted);font-size:11px;margin-top:5px}
+.turnrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.turn{padding:12px 8px;border:1px solid var(--line);border-radius:13px;background:var(--panel2);color:var(--text);font-size:13px}
+.turn.active{background:#48272c;border-color:#d77e84;color:#ffc1c1}
+.modal{display:none;position:fixed;inset:0;z-index:50;background:#000b;align-items:center;justify-content:center;padding:16px}
+.modalbox{width:min(100%,480px);max-height:90dvh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:19px}
+.modalbox h2{font-size:18px;margin-bottom:7px}.modalbox p{font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:13px}
+.field{margin:12px 0}.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}
+.field input,.field select{width:100%;padding:11px 12px;border-radius:10px;background:#10171c;border:1px solid var(--line);color:var(--text)}
+.modalfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}
+a{color:var(--accent)}
+@media(max-width:390px){.app{padding-left:11px;padding-right:11px}.card{padding:12px}.result-text{font-size:21px}.lang{font-size:12px}}
+</style>
+</head>
+<body>
+<main class="app">
+<header>
+  <button class="iconbtn" id="resetBtn" aria-label="Làm mới" title="Làm mới">↺</button>
+  <div class="brand"><strong>Dịch Thông Minh</strong><small>Trợ lý Việt ↔ Trung</small></div>
+  <div><button class="iconbtn" id="settingsBtn" aria-label="Cài đặt" title="Cài đặt">⚙</button><i class="dot" id="keyDot"></i></div>
+</header>
+
+<div class="error" id="errorBox" role="alert"></div>
+
+<section class="card">
+  <div class="langrow">
+    <select class="lang" id="sourceLang" aria-label="Ngôn ngữ nguồn">
+      <option value="Vietnamese">🇻🇳 Tiếng Việt</option><option value="Chinese">🇨🇳 中文（简体）</option><option value="English">🇺🇸 English</option><option value="auto">Tự động nhận diện</option>
+    </select>
+    <button class="swap" id="swapBtn" title="Đổi ngôn ngữ">⇄</button>
+    <select class="lang" id="targetLang" aria-label="Ngôn ngữ đích">
+      <option value="Chinese">🇨🇳 中文（简体）</option><option value="Vietnamese">🇻🇳 Tiếng Việt</option><option value="English">🇺🇸 English</option>
+    </select>
+  </div>
+  <textarea id="sourceText" placeholder="Nhập nội dung cần dịch..." spellcheck="true"></textarea>
+  <div class="row">
+    <div class="tools">
+      <button class="btn" id="clearTextBtn">Xóa</button>
+      <button class="btn" id="pasteBtn">Dán</button>
+      <button class="btn" id="drawToggle">✍ Viết tay</button>
+      <button class="btn" id="imageToggle">▧ Ảnh</button>
+    </div>
+    <span class="small" id="charCount">0 ký tự</span>
+  </div>
+
+  <div class="panel" id="drawPanel">
+    <div class="stage"><canvas id="drawCanvas"></canvas></div>
+    <div class="row">
+      <div class="tools">
+        <button class="btn" id="undoDraw">↶ Hoàn tác</button>
+        <button class="btn" id="clearDraw">Xóa nét</button>
+        <select class="btn" id="brushSize" aria-label="Cỡ bút"><option value="2">Mảnh</option><option value="4" selected>Vừa</option><option value="7">Đậm</option></select>
+      </div>
+      <button class="btn primary" id="translateDraw">Dịch chữ viết <i class="spinner" id="drawSpinner"></i></button>
+    </div>
+  </div>
+
+  <div class="panel" id="imagePanel">
+    <div class="preview" id="imagePreviewWrap"><img id="imagePreview" alt="Ảnh cần dịch"></div>
+    <div class="row">
+      <div class="tools"><button class="btn" id="chooseImageBtn">Chọn ảnh</button><button class="btn" id="removeImageBtn">Bỏ ảnh</button></div>
+      <button class="btn primary" id="translateImageBtn">Dịch nội dung ảnh <i class="spinner" id="imageSpinner"></i></button>
+    </div>
+    <input type="file" id="imageFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+    <div class="small">Hỗ trợ ảnh PNG, JPG, WebP, GIF. Nên dùng ảnh rõ nét, tối đa 12 MB.</div>
+  </div>
+</section>
+
+<section class="card result" id="resultCard" aria-live="polite">
+  <div class="result-head"><span class="result-label">Bản dịch</span><div class="tools"><button class="btn" id="copyBtn">Sao chép</button><button class="btn" id="speakBtn">🔊 Đọc</button></div></div>
+  <div class="result-text" id="resultText"></div>
+  <div class="pinyin" id="pinyinText"></div>
+  <div class="explain" id="explanation"></div>
+  <div class="extra" id="alternatives"></div>
+</section>
+
+<section class="card live" id="livePanel">
+  <div class="row"><b>Hội thoại trực tiếp</b><button class="btn" id="clearLiveBtn">Xóa hội thoại</button></div>
+  <div class="small">Chọn lượt nói. Ứng dụng ghi âm, nhận dạng và dịch sang ngôn ngữ còn lại. Chạm lại nút đang ghi để dừng.</div>
+  <div class="feed" id="liveFeed"><div class="small">Chưa có nội dung hội thoại.</div></div>
+  <div class="turnrow">
+    <button class="turn" id="sideABtn">🎙 Người nói tiếng Việt</button>
+    <button class="turn" id="sideBBtn">🎙 Người nói tiếng Trung</button>
+  </div>
+  <div class="row"><span class="small" id="liveStatus">Đang chờ người nói.</span><button class="btn ghost" id="stopLiveBtn">Dừng ghi âm</button></div>
+</section>
+
+<div class="bottom">
+  <div class="main-actions">
+    <button class="btn primary" id="translateBtn">Dịch văn bản <i class="spinner" id="translateSpinner"></i></button>
+    <button class="btn" id="polishBtn">Dịch tự nhiên hơn</button>
+  </div>
+  <div class="dock">
+    <button class="dockbtn" id="liveToggle"><span class="dockcircle">⇄</span>Hội thoại</button>
+    <button class="mic" id="micBtn" aria-label="Nhập bằng giọng nói">🎙</button>
+    <button class="dockbtn" id="ttsSourceBtn"><span class="dockcircle">🔊</span>Đọc nguồn</button>
+  </div>
+  <div class="small" style="text-align:center">Bản dịch AI có thể cần kiểm tra lại trong ngữ cảnh chuyên ngành.</div>
+</div>
+</main>
+
+<div class="modal" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+ <div class="modalbox">
+  <h2 id="settingsTitle">Cài đặt Gemini API</h2>
+  <p>Nhập Google Gemini API key. Khóa được lưu trong localStorage trên trình duyệt hiện tại và gửi trực tiếp tới Google qua HTTPS. Không nên dùng cách lưu này cho website công khai hoặc máy tính dùng chung; nếu triển khai nhiều người dùng, hãy đặt API key ở máy chủ.</p>
+  <div class="field"><label for="apiKey">API Key</label><input id="apiKey" type="password" autocomplete="off" placeholder="AIza..."></div>
+  <div class="field"><label for="modelName">Gemini model</label><input id="modelName" type="text" value="gemini-3.8-flash" spellcheck="false"></div>
+  <p>API sử dụng Google Gemini generateContent. Có thể đổi model nếu model mặc định không còn được tài khoản hỗ trợ.</p>
+  <div class="modalfoot"><button class="btn" id="cancelSettings">Đóng</button><button class="btn primary" id="saveSettings">Lưu cài đặt</button></div>
+ </div>
+</div>
+
+<script>
+"use strict";
+
+/* ============================ CẤU HÌNH ============================ */
+const CONFIG = {
+  apiBase: "https://generativelanguage.googleapis.com/v1beta/models/",
+  requestTimeoutMs: 75000,
+  maxImageBytes: 12 * 1024 * 1024,
+  maxImageDimension: 1800,
+  maxAudioBytes: 18 * 1024 * 1024
+};
+const $ = id => document.getElementById(id);
+const state = {
+  apiKey: localStorage.getItem("smart_translate_api_key") || "",
+  model: localStorage.getItem("smart_translate_model") || "gemini-3.8-flash",
+  lastResult: null, imageData: null, imageMime: null,
+  isBusy: false, liveRecorder: null, liveStream: null, liveSide: null,
+  liveStarting: false, liveStartToken: 0, liveChunks: [], liveSequence: 0, recognition: null,
+  strokes: [], currentStroke: null, canvasDpr: 1, canvasWidth: 0, canvasHeight: 0
+};
+const LANG_NAMES = {Vietnamese:"tiếng Việt",Chinese:"tiếng Trung giản thể",English:"tiếng Anh",auto:"ngôn ngữ được tự động nhận diện"};
+const LANG_CODES = {Vietnamese:"vi-VN",Chinese:"zh-CN",English:"en-US"};
+const el = {
+  error:$("errorBox"), status:$("status"), keyDot:$("keyDot"), source:$("sourceText"),
+  result:$("resultCard"), resultText:$("resultText"), pinyin:$("pinyinText"),
+  explanation:$("explanation"), alternatives:$("alternatives"),
+  translate:$("translateBtn"), translateSpin:$("translateSpinner"),
+  sourceLang:$("sourceLang"), targetLang:$("targetLang"),
+  drawPanel:$("drawPanel"), imagePanel:$("imagePanel"), canvas:$("drawCanvas"),
+  livePanel:$("livePanel"), liveFeed:$("liveFeed"), liveStatus:$("liveStatus"),
+  mic:$("micBtn")
+};
+
+/* ============================ TIỆN ÍCH UI ============================ */
+function showError(message) {
+  el.error.textContent = String(message || "Đã xảy ra lỗi không xác định.");
+  el.error.style.display = "block";
+  el.error.scrollIntoView({behavior:"smooth", block:"nearest"});
+}
+function clearError(){el.error.textContent="";el.error.style.display="none";}
+function setStatus(){
+  const ready = Boolean(state.apiKey.trim());
+  el.status.textContent = ready ? "Gemini đã cấu hình" : "Chưa có API Key";
+  el.keyDot.classList.toggle("ready",ready);
+}
+function setBusy(busy, spinnerId){
+  state.isBusy = busy;
+  if (spinnerId) $(spinnerId).style.display = busy ? "inline-block" : "none";
+  ["translateBtn","polishBtn","translateDraw","translateImageBtn"].forEach(id=>$(id).disabled=busy);
+}
+function openSettings(){ $("apiKey").value=state.apiKey; $("modelName").value=state.model; $("settingsModal").style.display="flex"; }
+function closeSettings(){ $("settingsModal").style.display="none"; }
+function updateCount(){ $("charCount").textContent = `${el.source.value.length.toLocaleString("vi-VN")} ký tự`; }
+function escapeText(value){return String(value ?? "").replace(/\u0000/g,"");}
+function sourceLang(){return el.sourceLang.value;}
+function targetLang(){return el.targetLang.value;}
+function langPrompt(value){return LANG_NAMES[value] || value;}
+function ensureConfig(){
+  if(!state.apiKey.trim()){openSettings();throw new Error("Bạn cần nhập Gemini API Key trong phần Cài đặt trước khi sử dụng.");}
+  if(!/^[a-zA-Z0-9._-]{2,100}$/.test(state.model.trim())) throw new Error("Tên model không hợp lệ. Ví dụ: gemini-2.5-flash");
+}
+function stopStream(stream){if(stream)stream.getTracks().forEach(track=>{try{track.stop();}catch(_){}});}
+function dataUrlToParts(dataUrl){
+  const match = /^data:(image\/(?:png|jpeg|webp));base64,([\s\S]+)$/i.exec(dataUrl);
+  if(!match)throw new Error("Định dạng ảnh không được hỗ trợ. Hãy dùng PNG, JPG hoặc WebP.");
+  return {mimeType:match[1].toLowerCase(),data:match[2]};
+}
+function fileToDataUrl(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onerror=()=>reject(new Error("Không thể đọc tệp ảnh."));
+    reader.onabort=()=>reject(new Error("Đã hủy đọc ảnh."));
+    reader.onload=()=>typeof reader.result==="string"?resolve(reader.result):reject(new Error("Dữ liệu ảnh không hợp lệ."));
+    reader.readAsDataURL(file);
+  });
+}
+function loadImage(src){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error("Không thể mở ảnh. Tệp có thể bị hỏng."));
+    img.src=src;
+  });
+}
+async function optimizeImage(file){
+  if(!file || !file.type.startsWith("image/"))throw new Error("Vui lòng chọn một tệp hình ảnh.");
+  if(file.size>CONFIG.maxImageBytes)throw new Error("Ảnh vượt quá 12 MB. Hãy chọn ảnh nhỏ hơn.");
+  const original=await fileToDataUrl(file);
+  const img=await loadImage(original);
+  const scale=Math.min(1,CONFIG.maxImageDimension/Math.max(img.naturalWidth,img.naturalHeight));
+  const canvas=document.createElement("canvas");
+  canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));
+  canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
+  const ctx=canvas.getContext("2d");
+  if(!ctx)throw new Error("Trình duyệt không hỗ trợ xử lý ảnh.");
+  ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);
+  return canvas.toDataURL("image/jpeg",.88);
+}
+
+/* ============================ GEMINI API ============================ */
+async function geminiRequest(parts, {systemInstruction, temperature=.25, maxOutputTokens=1800, timeoutMs=CONFIG.requestTimeoutMs}={}){
+  ensureConfig();
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  const url=CONFIG.apiBase+encodeURIComponent(state.model.trim())+":generateContent";
+  const body={
+    systemInstruction:{parts:[{text:systemInstruction || "You are a professional translator. Follow the user's translation instructions exactly."}]},
+    contents:[{role:"user",parts}],
+    generationConfig:{temperature,maxOutputTokens,responseMimeType:"application/json"}
+  };
+  let response;
+  try{
+    response=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":state.apiKey.trim()},body:JSON.stringify(body),signal:controller.signal});
+  }catch(error){
+    if(error.name==="AbortError")throw new Error("Yêu cầu đã quá thời gian chờ. Hãy thử lại hoặc giảm kích thước nội dung.");
+    if(!navigator.onLine)throw new Error("Thiết bị đang ngoại tuyến. Hãy kiểm tra kết nối Internet.");
+    clearTimeout(timer);
+    throw new Error("Không kết nối được Gemini API: "+(error.message||"lỗi mạng"));
+  }
+  let raw;
+  try{raw=await response.text();}catch(error){clearTimeout(timer);throw new Error("Không đọc được phản hồi từ Gemini: "+(error.message||error));}
+  clearTimeout(timer);
+  let data;
+  try{data=raw?JSON.parse(raw):{};}catch(_){throw new Error(`Gemini trả về dữ liệu không đọc được (HTTP ${response.status}).`);}
+  if(!response.ok){
+    const msg=data?.error?.message || `HTTP ${response.status}`;
+    if(response.status===400)throw new Error("Yêu cầu không hợp lệ: "+msg);
+    if(response.status===401||response.status===403)throw new Error("API Key không hợp lệ, chưa được cấp quyền hoặc API chưa bật: "+msg);
+    if(response.status===404)throw new Error("Không tìm thấy model/API: "+msg+". Hãy kiểm tra tên model trong Cài đặt.");
+    if(response.status===429)throw new Error("Gemini đang giới hạn tốc độ hoặc đã hết quota. Vui lòng chờ rồi thử lại.");
+    throw new Error("Gemini API lỗi: "+msg);
+  }
+  if(data.promptFeedback?.blockReason)throw new Error("Yêu cầu bị Gemini chặn: "+data.promptFeedback.blockReason);
+  const candidate=data.candidates?.[0];
+  if(!candidate)throw new Error("Gemini không trả về kết quả. Hãy thử diễn đạt lại nội dung.");
+  if(candidate.finishReason==="SAFETY")throw new Error("Nội dung bị bộ lọc an toàn của Gemini chặn.");
+  const text=(candidate.content?.parts||[]).map(p=>p.text||"").join("").trim();
+  if(!text)throw new Error("Gemini trả về nội dung trống.");
+  return text;
+}
+function parseJsonResponse(text){
+  let cleaned=text.trim().replace(/^```(?:json)?\s*/i,"").replace(/\s*```$/,"");
+  try{return JSON.parse(cleaned);}catch(_){
+    const first=cleaned.indexOf("{"),last=cleaned.lastIndexOf("}");
+    if(first>=0&&last>first){try{return JSON.parse(cleaned.slice(first,last+1));}catch(__){}}
+    throw new Error("Không phân tích được định dạng kết quả từ Gemini. Hãy thử lại.");
+  }
+}
+function translationPrompt({mode="translate",extraContext=""}={}){
+  const from=langPrompt(sourceLang()),to=langPrompt(targetLang());
+  return `Bạn là chuyên gia biên dịch Việt–Trung, đồng thời là biên dịch viên kỹ thuật nhà máy. Nhiệm vụ: dịch nội dung từ ${from} sang ${to}.
+YÊU CẦU CHẤT LƯỢNG:
+- Giữ nguyên ý nghĩa, dữ kiện, con số, mã máy, mã model, tên riêng, ký hiệu, đơn vị, thời gian, mã lỗi và thuật ngữ kỹ thuật; tuyệt đối không tự ý thêm/bớt thông tin.
+- Nếu là tiếng Việt sang tiếng Trung: dùng tiếng Trung giản thể tự nhiên, đúng ngữ pháp, cách diễn đạt chuyên nghiệp như người bản xứ. Ưu tiên thuật ngữ nhà máy, tự động hóa, PLC, servo, robot, thiết bị, sản xuất khi ngữ cảnh phù hợp.
+- Nếu là tiếng Trung sang tiếng Việt: dịch rõ ràng, tự nhiên, đúng ngữ cảnh; không dịch máy móc từng chữ.
+- Giữ bố cục gạch đầu dòng, xuống dòng, tiêu đề, định dạng báo cáo. Với câu giao tiếp, chọn sắc thái lịch sự, tự nhiên, không quá văn vẻ.
+- Phân biệt chính xác các thuật ngữ, tên bộ phận và từ viết tắt; nếu từ nguồn mơ hồ, không đoán quá mức.
+- Pinyin chỉ dành cho bản dịch tiếng Trung; không phiên âm tên/mã thiết bị.
+- Nếu nội dung đã cùng ngôn ngữ đích, hãy hiệu chỉnh tự nhiên thay vì tạo bản dịch sai.
+${mode==="polish"?"Hãy ưu tiên bản dịch trôi chảy, sát ngữ cảnh và chuẩn văn phong hơn; vẫn giữ nguyên nội dung.":""}
+${extraContext}
+CHỈ trả về JSON hợp lệ, không markdown, theo schema:
+{"translation":"bản dịch đầy đủ","pinyin":"pinyin nếu bản dịch là tiếng Trung, nếu không để chuỗi rỗng","explanation":"ghi chú ngắn về thuật ngữ/lựa chọn dịch nếu thực sự cần, nếu không để chuỗi rỗng","alternatives":[{"text":"cách diễn đạt khác nếu hữu ích","note":"sắc thái sử dụng"}]}
+Không tự tạo alternatives nếu không cần.`;
+}
+async function translateText(mode="translate", inputOverride=null){
+  if(state.isBusy)return;
+  clearError();
+  const input=escapeText(inputOverride ?? el.source.value).trim();
+  if(!input){showError("Vui lòng nhập nội dung cần dịch.");return;}
+  if(input.length>20000){showError("Nội dung quá dài (tối đa 20.000 ký tự mỗi lượt).");return;}
+  try{
+    setBusy(true,"translateSpinner");
+    const response=await geminiRequest([{text:input}],{systemInstruction:translationPrompt({mode}),temperature:mode==="polish"?.2:.15});
+    const result=parseJsonResponse(response);
+    if(!result.translation || typeof result.translation!=="string")throw new Error("Gemini không trả về trường bản dịch hợp lệ.");
+    renderResult(result);
+  }catch(e){showError(e.message||e);}
+  finally{setBusy(false,"translateSpinner");}
+}
+function renderResult(result){
+  state.lastResult=result;
+  el.resultText.textContent=result.translation;
+  el.pinyin.textContent=result.pinyin||"";
+  el.pinyin.style.display=result.pinyin?"block":"none";
+  el.explanation.textContent=result.explanation||"";
+  el.explanation.style.display=result.explanation?"block":"none";
+  el.alternatives.replaceChildren();
+  const alternatives=Array.isArray(result.alternatives)?result.alternatives.slice(0,4):[];
+  alternatives.forEach(item=>{
+    const div=document.createElement("div");div.className="extra-item";
+    const b=document.createElement("b");b.textContent=item.text||"";
+    const note=document.createElement("div");note.textContent=item.note||"";
+    div.append(b,note);el.alternatives.append(div);
+  });
+  el.alternatives.style.display=alternatives.length?"flex":"none";
+  el.result.style.display="block";
+  el.result.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+async function translateImage(){
+  if(state.isBusy)return;
+  clearError();
+  if(!state.imageData){showError("Bạn chưa chọn ảnh.");return;}
+  try{
+    setBusy(true,"imageSpinner");
+    const {mimeType,data}=dataUrlToParts(state.imageData);
+    const prompt=translationPrompt({extraContext:"Đây là ảnh có văn bản. Hãy đọc chữ trong ảnh (OCR) rồi dịch toàn bộ phần chữ nhìn thấy. Giữ thứ tự/bố cục hợp lý. Nếu có phần không đọc rõ, đánh dấu [không rõ] thay vì đoán."});
+    const text=await geminiRequest([{text:prompt},{inline_data:{mime_type:mimeType,data}}],{systemInstruction:"Bạn là chuyên gia OCR và biên dịch. Trích xuất chính xác văn bản trong ảnh rồi dịch theo yêu cầu. Trả JSON theo schema được yêu cầu.",temperature:.1});
+    const result=parseJsonResponse(text);
+    if(!result.translation)throw new Error("Không nhận diện được nội dung chữ trong ảnh.");
+    renderResult(result);
+  }catch(e){showError(e.message||e);}
+  finally{setBusy(false,"imageSpinner");}
+}
+async function translateDrawing(){
+  if(state.isBusy)return;
+  if(!state.strokes.length){showError("Hãy viết chữ lên bảng trước.");return;}
+  try{
+    setBusy(true,"drawSpinner");clearError();
+    const {mimeType,data}=dataUrlToParts(el.canvas.toDataURL("image/png"));
+    const prompt=translationPrompt({extraContext:"Đây là ảnh chữ viết tay. Hãy nhận dạng chữ viết tay (có thể là tiếng Việt hoặc tiếng Trung), sau đó dịch sang ngôn ngữ đích. Nếu nét chữ không rõ, không tự suy diễn; ghi [không rõ] ở vị trí đó."});
+    const text=await geminiRequest([{text:prompt},{inline_data:{mime_type:mimeType,data}}],{systemInstruction:"Bạn là chuyên gia nhận dạng chữ viết tay và biên dịch Việt-Trung. Trả JSON theo schema được yêu cầu.",temperature:.1});
+    const result=parseJsonResponse(text);
+    if(!result.translation)throw new Error("Không nhận dạng được chữ viết tay.");
+    renderResult(result);
+  }catch(e){showError(e.message||e);}
+  finally{setBusy(false,"drawSpinner");}
+}
+
+/* ============================ CANVAS VẼ TAY ============================ */
+const ctx=el.canvas.getContext("2d");
+function canvasPoint(event){
+  const rect=el.canvas.getBoundingClientRect();
+  return {x:(event.clientX-rect.left)/rect.width*state.canvasWidth,y:(event.clientY-rect.top)/rect.height*state.canvasHeight};
+}
+function resizeCanvas(){
+  const rect=el.canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
+  const oldW=state.canvasWidth,oldH=state.canvasHeight;
+  const ratio=Math.min(window.devicePixelRatio||1,2);
+  const newW=Math.round(rect.width*ratio),newH=Math.round(rect.height*ratio);
+  if(el.canvas.width===newW&&el.canvas.height===newH)return;
+  el.canvas.width=newW;el.canvas.height=newH;state.canvasWidth=newW;state.canvasHeight=newH;state.canvasDpr=ratio;
+  if(oldW&&oldH){
+    const sx=newW/oldW,sy=newH/oldH;
+    state.strokes.forEach(stroke=>stroke.points.forEach(p=>{p.x*=sx;p.y*=sy;}));
+    if(state.currentStroke)state.currentStroke.points.forEach(p=>{p.x*=sx;p.y*=sy;});
+  }
+  redrawCanvas();
+}
+function redrawCanvas(){
+  if(!ctx)return;
+  ctx.clearRect(0,0,el.canvas.width,el.canvas.height);
+  ctx.fillStyle="#fff";ctx.fillRect(0,0,el.canvas.width,el.canvas.height);
+  ctx.lineCap="round";ctx.lineJoin="round";ctx.strokeStyle="#101820";
+  state.strokes.forEach(stroke=>{
+    if(!stroke.points.length)return;
+    ctx.lineWidth=stroke.size*state.canvasDpr;
+    ctx.beginPath();ctx.moveTo(stroke.points[0].x,stroke.points[0].y);
+    stroke.points.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));
+    if(stroke.points.length===1){ctx.lineTo(stroke.points[0].x+.1,stroke.points[0].y+.1);}
+    ctx.stroke();
+  });
+}
+el.canvas.addEventListener("pointerdown",e=>{
+  if(el.drawPanel.style.display==="none")return;
+  e.preventDefault();el.canvas.setPointerCapture?.(e.pointerId);
+  const p=canvasPoint(e);state.currentStroke={size:Number($("brushSize").value),points:[p]};
+});
+el.canvas.addEventListener("pointermove",e=>{
+  if(!state.currentStroke)return;e.preventDefault();state.currentStroke.points.push(canvasPoint(e));
+  state.strokes.push(state.currentStroke);redrawCanvas();state.strokes.pop();
+});
+function finishStroke(){if(state.currentStroke){state.strokes.push(state.currentStroke);state.currentStroke=null;redrawCanvas();}}
+el.canvas.addEventListener("pointerup",finishStroke);el.canvas.addEventListener("pointercancel",finishStroke);
+$("undoDraw").addEventListener("click",()=>{state.strokes.pop();redrawCanvas();});
+$("clearDraw").addEventListener("click",()=>{state.strokes=[];state.currentStroke=null;redrawCanvas();});
+$("drawToggle").addEventListener("click",()=>{
+  const show=el.drawPanel.style.display!=="flex";
+  el.drawPanel.style.display=show?"flex":"none";
+  if(show){el.imagePanel.style.display="none";requestAnimationFrame(resizeCanvas);}
+});
+
+/* ============================ ẢNH ============================ */
+$("imageToggle").addEventListener("click",()=>{
+  const show=el.imagePanel.style.display!=="flex";
+  el.imagePanel.style.display=show?"flex":"none";
+  if(show)el.drawPanel.style.display="none";
+});
+$("chooseImageBtn").addEventListener("click",()=>$("imageFile").click());
+$("imageFile").addEventListener("change",async e=>{
+  const file=e.target.files?.[0];if(!file)return;
+  clearError();
+  try{
+    const optimized=await optimizeImage(file);
+    state.imageData=optimized;
+    $("imagePreview").src=optimized;$("imagePreviewWrap").style.display="flex";
+  }catch(err){showError(err.message||err);}
+  finally{e.target.value="";}
+});
+$("removeImageBtn").addEventListener("click",()=>{
+  state.imageData=null;$("imagePreview").removeAttribute("src");$("imagePreviewWrap").style.display="none";
+});
+$("translateImageBtn").addEventListener("click",translateImage);
+$("translateDraw").addEventListener("click",translateDrawing);
+
+/* ============================ CLIPBOARD / TTS ============================ */
+$("copyBtn").addEventListener("click",async()=>{
+  const text=state.lastResult?.translation;if(!text)return;
+  try{
+    if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(text);
+    else{const t=document.createElement("textarea");t.value=text;document.body.append(t);t.select();const ok=document.execCommand("copy");t.remove();if(!ok)throw new Error("Trình duyệt không cho phép sao chép.");}
+    $("copyBtn").textContent="Đã sao chép ✓";setTimeout(()=>$("copyBtn").textContent="Sao chép",1500);
+  }catch(e){showError("Không thể sao chép: "+e.message);}
+});
+function speak(text,lang){
+  if(!("speechSynthesis" in window)){showError("Trình duyệt này không hỗ trợ đọc văn bản.");return;}
+  if(!text)return;
+  speechSynthesis.cancel();
+  const utterance=new SpeechSynthesisUtterance(text);
+  utterance.lang=LANG_CODES[lang]||"zh-CN";utterance.rate=lang==="Chinese"?.88:1;
+  const voices=speechSynthesis.getVoices();
+  const prefix=utterance.lang.toLowerCase().split("-")[0];
+  const voice=voices.find(v=>v.lang.toLowerCase().startsWith(prefix));
+  if(voice)utterance.voice=voice;
+  utterance.onerror=()=>showError("Không thể phát giọng đọc trên thiết bị này.");
+  speechSynthesis.speak(utterance);
+}
+$("speakBtn").addEventListener("click",()=>speak(state.lastResult?.translation,targetLang()));
+$("ttsSourceBtn").addEventListener("click",()=>speak(el.source.value,sourceLang()==="auto"?"Vietnamese":sourceLang()));
+
+/* ============================ GIỌNG NÓI: NHẬP LIỆU ============================ */
+function startSpeechInput(){
+  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SpeechRecognition){showError("Trình duyệt không hỗ trợ nhận dạng giọng nói. Hãy dùng Chrome hoặc nhập văn bản.");return;}
+  if(state.recognition){try{state.recognition.stop();}catch(_){}state.recognition=null;return;}
+  const recognition=new SpeechRecognition();state.recognition=recognition;
+  recognition.lang=LANG_CODES[sourceLang()]||"vi-VN";recognition.interimResults=true;recognition.continuous=false;
+  let finalText="";
+  recognition.onresult=e=>{
+    let interim="";
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const value=e.results[i][0].transcript;
+      if(e.results[i].isFinal)finalText+=value+" ";else interim+=value;
+    }
+    el.source.value=(finalText+interim).trim();updateCount();
+  };
+  recognition.onerror=e=>showError("Lỗi nhận dạng giọng nói: "+e.error);
+  recognition.onend=()=>{if(state.recognition===recognition)state.recognition=null;el.mic.classList.remove("recording");};
+  try{recognition.start();el.mic.classList.add("recording");}catch(e){state.recognition=null;showError("Không thể bắt đầu nhận dạng: "+e.message);}
+}
+el.mic.addEventListener("click",startSpeechInput);
+
+/* ============================ HỘI THOẠI TRỰC TIẾP ============================ */
+function addBubble(text,side,translation){
+  const empty=el.liveFeed.querySelector(".small");if(empty)empty.remove();
+  const bubble=document.createElement("div");bubble.className="bubble "+(side==="A"?"left":"right");
+  const main=document.createElement("div");main.textContent=text;
+  bubble.append(main);
+  if(translation){const sub=document.createElement("small");sub.textContent="→ "+translation;bubble.append(sub);}
+  el.liveFeed.append(bubble);el.liveFeed.scrollTop=el.liveFeed.scrollHeight;
+}
+function liveLanguages(side){
+  return side==="A"?{from:"Vietnamese",to:"Chinese"}:{from:"Chinese",to:"Vietnamese"};
+}
+function supportedRecorderMime(){
+  if(!window.MediaRecorder)return "";
+  const candidates=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg;codecs=opus"];
+  return candidates.find(type=>MediaRecorder.isTypeSupported?.(type))||"";
+}
+async function stopLiveRecording(){
+  state.liveStartToken++;
+  state.liveStarting=false;
+  const recorder=state.liveRecorder;
+  if(recorder&&recorder.state!=="inactive"){
+    try{recorder.stop();}catch(_){}
+  }else{
+    stopStream(state.liveStream);state.liveStream=null;state.liveRecorder=null;
+    state.liveSide=null;state.liveStarting=false;updateLiveButtons();
+  }
+}
+function updateLiveButtons(){
+  $("sideABtn").classList.toggle("active",state.liveSide==="A"||state.liveStarting&&state.startingSide==="A");
+  $("sideBBtn").classList.toggle("active",state.liveSide==="B"||state.liveStarting&&state.startingSide==="B");
+  el.mic.classList.toggle("recording",Boolean(state.liveRecorder&&state.liveRecorder.state==="recording"));
+}
+async function beginLiveRecording(side){
+  if(state.isBusy){showError("Đang xử lý yêu cầu trước đó. Vui lòng chờ hoàn tất.");return;}
+  if(state.liveStarting){return;}
+  if(state.liveRecorder){
+    if(state.liveSide===side){await stopLiveRecording();return;}
+    showError("Hãy dừng lượt ghi âm hiện tại trước khi chuyển người nói.");return;
+  }
+  if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){
+    showError("Trình duyệt không hỗ trợ ghi âm trực tiếp. Hãy dùng Chrome/Edge/Safari mới và cấp quyền microphone.");return;
+  }
+  if(!state.apiKey){openSettings();showError("Cần nhập Gemini API Key trước khi dùng hội thoại.");return;}
+  state.liveStarting=true;state.startingSide=side;const startToken=++state.liveStartToken;updateLiveButtons();el.liveStatus.textContent="Đang xin quyền microphone…";clearError();
+  let stream;
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+    if(!state.liveStarting||startToken!==state.liveStartToken){stopStream(stream);return;}
+    const mime=supportedRecorderMime();
+    const recorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);
+    state.liveStream=stream;state.liveRecorder=recorder;state.liveSide=side;state.liveStarting=false;state.liveChunks=[];
+    recorder.ondataavailable=e=>{if(e.data&&e.data.size)state.liveChunks.push(e.data);};
+    recorder.onerror=e=>{showError("Lỗi ghi âm: "+(e.error?.message||"không xác định"));};
+    recorder.onstop=async()=>{
+      const chunks=state.liveChunks.slice();state.liveChunks=[];
+      const actualMime=recorder.mimeType||chunks[0]?.type||"";
+      stopStream(state.liveStream);state.liveStream=null;state.liveRecorder=null;state.liveSide=null;state.liveStarting=false;updateLiveButtons();
+      if(!chunks.length){el.liveStatus.textContent="Không thu được âm thanh.";return;}
+      const blob=new Blob(chunks,{type:actualMime});
+      if(blob.size>CONFIG.maxAudioBytes){showError("Đoạn ghi âm quá lớn. Hãy nói ngắn hơn.");return;}
+      await processLiveAudio(blob,actualMime,side);
+    };
+    recorder.start(250);el.liveStatus.textContent=side==="A"?"Đang nghe tiếng Việt… Chạm lại để dừng.":"正在聆听中文… 再次点击停止。";updateLiveButtons();
+  }catch(e){
+    stopStream(stream);state.liveStarting=false;state.liveRecorder=null;state.liveStream=null;state.liveSide=null;updateLiveButtons();
+    showError("Không thể truy cập microphone: "+(e.message||e));
+    el.liveStatus.textContent="Không bật được microphone.";
+  }
+}
+function blobToBase64(blob){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();reader.onerror=()=>reject(new Error("Không thể đọc dữ liệu ghi âm."));
+    reader.onload=()=>{const result=String(reader.result||"");const index=result.indexOf(",");if(index<0)reject(new Error("Dữ liệu âm thanh không hợp lệ."));else resolve(result.slice(index+1));};
+    reader.readAsDataURL(blob);
+  });
+}
+async function processLiveAudio(blob,mime,side){
+  if(state.isBusy){showError("Một yêu cầu khác đang được xử lý. Hãy thử lại sau.");return;}
+  state.isBusy=true;
+  const {from,to}=liveLanguages(side);
+  const safeMime=(mime||blob.type||"").split(";")[0].toLowerCase();
+  const supported=["audio/webm","audio/mp4","audio/ogg","audio/wav","audio/mpeg","audio/aac","audio/flac"].includes(safeMime);
+  if(!supported){showError("Định dạng âm thanh "+(mime||"không rõ")+" chưa được hỗ trợ bởi Gemini. Hãy thử Chrome hoặc Safari mới.");return;}
+  el.liveStatus.textContent="Đang nhận dạng và dịch…";
+  try{
+    const b64=await blobToBase64(blob);
+    const prompt=`Nghe đoạn âm thanh được cung cấp. Người nói dự kiến đang nói ${langPrompt(from)}. Hãy nhận dạng chính xác lời nói, sau đó dịch tự nhiên sang ${langPrompt(to)}. Giữ nguyên số, tên riêng, mã thiết bị và thuật ngữ. Nếu không nghe rõ, ghi [không nghe rõ], không tự bịa. Chỉ trả JSON hợp lệ: {"transcript":"lời nói gốc","translation":"bản dịch","pinyin":"pinyin nếu bản dịch là tiếng Trung, ngược lại chuỗi rỗng"}.`;
+    const raw=await geminiRequest([{text:prompt},{inline_data:{mime_type:safeMime,data:b64}}],{systemInstruction:"You are a high-accuracy multilingual speech transcription and Vietnamese-Chinese translation assistant. Return only valid JSON.",temperature:.1,maxOutputTokens:1200,timeoutMs:90000});
+    const result=parseJsonResponse(raw);
+    if(!result.transcript&&!result.translation)throw new Error("Không nhận dạng được lời nói.");
+    addBubble(result.transcript||"(Không nhận dạng được)",side,result.translation||"");
+    if(result.pinyin&&to==="Chinese")addBubble("Pinyin: "+result.pinyin,side,"");
+    el.liveStatus.textContent="Đã dịch xong. Chọn người nói tiếp theo.";
+    if(result.translation)speak(result.translation,to);
+  }catch(e){showError(e.message||e);el.liveStatus.textContent="Dịch thất bại. Bạn có thể ghi âm lại.";}
+}
+$("sideABtn").addEventListener("click",()=>beginLiveRecording("A"));
+$("sideBBtn").addEventListener("click",()=>beginLiveRecording("B"));
+$("stopLiveBtn").addEventListener("click",stopLiveRecording);
+$("liveToggle").addEventListener("click",()=>{
+  const show=el.livePanel.style.display!=="flex";el.livePanel.style.display=show?"flex":"none";
+  $("liveToggle").classList.toggle("active",show);
+  if(show){el.drawPanel.style.display="none";el.imagePanel.style.display="none";el.livePanel.scrollIntoView({behavior:"smooth",block:"nearest"});}
+  else if(state.liveRecorder||state.liveStarting)stopLiveRecording();
+});
+$("clearLiveBtn").addEventListener("click",()=>{
+  if(state.liveRecorder||state.liveStarting)stopLiveRecording();
+  el.liveFeed.replaceChildren();const empty=document.createElement("div");empty.className="small";empty.textContent="Chưa có nội dung hội thoại.";el.liveFeed.append(empty);
+  el.liveStatus.textContent="Đã xóa hội thoại.";
+});
+
+/* ============================ CÀI ĐẶT / ĐỔI NGÔN NGỮ / RESET ============================ */
+$("settingsBtn").addEventListener("click",openSettings);
+$("cancelSettings").addEventListener("click",closeSettings);
+$("saveSettings").addEventListener("click",()=>{
+  const key=$("apiKey").value.trim(),model=$("modelName").value.trim();
+  if(!key){showError("API Key không được để trống.");return;}
+  if(!/^[a-zA-Z0-9._-]{2,100}$/.test(model)){showError("Tên model không hợp lệ.");return;}
+  state.apiKey=key;state.model=model;
+  try{localStorage.setItem("smart_translate_api_key",key);localStorage.setItem("smart_translate_model",model);}
+  catch(e){showError("Không thể lưu cài đặt trên trình duyệt: "+e.message);return;}
+  setStatus();closeSettings();clearError();
+});
+$("settingsModal").addEventListener("click",e=>{if(e.target===$("settingsModal"))closeSettings();});
+$("swapBtn").addEventListener("click",()=>{
+  const a=sourceLang(),b=targetLang();
+  if(a==="auto"){showError("Không thể đổi chiều khi nguồn đang ở chế độ tự động nhận diện. Hãy chọn ngôn ngữ nguồn cụ thể.");return;}
+  el.sourceLang.value=b;el.targetLang.value=a;
+  if(state.lastResult){el.source.value=state.lastResult.translation;updateCount();state.lastResult=null;el.result.style.display="none";}
+});
+$("sourceLang").addEventListener("change",()=>{if(sourceLang()===targetLang())showError("Ngôn ngữ nguồn và đích đang giống nhau.");else clearError();});
+$("targetLang").addEventListener("change",()=>{if(sourceLang()===targetLang())showError("Ngôn ngữ nguồn và đích đang giống nhau.");else clearError();});
+$("translateBtn").addEventListener("click",()=>translateText("translate"));
+$("polishBtn").addEventListener("click",()=>translateText("polish"));
+el.source.addEventListener("input",updateCount);
+$("clearTextBtn").addEventListener("click",()=>{el.source.value="";updateCount();});
+$("pasteBtn").addEventListener("click",async()=>{
+  try{
+    if(!navigator.clipboard?.readText)throw new Error("Trình duyệt không hỗ trợ đọc clipboard. Hãy nhấn giữ ô nhập và chọn Dán.");
+    el.source.value=await navigator.clipboard.readText();updateCount();el.source.focus();
+  }catch(e){showError("Không thể dán nội dung: "+e.message);}
+});
+function resetApp(){
+  if(state.liveRecorder||state.liveStarting)stopLiveRecording();
+  if(state.recognition){try{state.recognition.stop();}catch(_){}state.recognition=null;}
+  if("speechSynthesis"in window)speechSynthesis.cancel();
+  el.source.value="";updateCount();state.lastResult=null;el.result.style.display="none";
+  el.resultText.textContent="";el.pinyin.textContent="";el.explanation.textContent="";
+  state.imageData=null;$("imagePreview").removeAttribute("src");$("imagePreviewWrap").style.display="none";
+  state.strokes=[];state.currentStroke=null;redrawCanvas();
+  el.drawPanel.style.display="none";el.imagePanel.style.display="none";
+  el.livePanel.style.display="none";$("liveToggle").classList.remove("active");
+  el.liveFeed.replaceChildren();const empty=document.createElement("div");empty.className="small";empty.textContent="Chưa có nội dung hội thoại.";el.liveFeed.append(empty);
+  el.liveStatus.textContent="Đang chờ người nói.";clearError();
+}
+$("resetBtn").addEventListener("click",resetApp);
+window.addEventListener("resize",()=>{if(el.drawPanel.style.display==="flex")resizeCanvas();});
+window.addEventListener("pagehide",()=>{
+  if(state.liveRecorder&&state.liveRecorder.state!=="inactive"){try{state.liveRecorder.stop();}catch(_){}}
+  stopStream(state.liveStream);
+});
+
+/* ============================ KHỞI TẠO ============================ */
+setStatus();updateCount();
+if("speechSynthesis"in window)speechSynthesis.getVoices();
+if(window.ResizeObserver){new ResizeObserver(()=>{if(el.drawPanel.style.display==="flex")resizeCanvas();}).observe(el.canvas.parentElement);}
+</script>
+</body>
+</html>
