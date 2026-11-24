@@ -9,71 +9,169 @@
 :root{
   color-scheme:dark;--bg:#101418;--panel:#192127;--panel2:#202b33;--panel3:#27343d;
   --line:#34434d;--text:#edf3f6;--muted:#9aabb5;--accent:#8ecbff;--accent2:#c4e5ff;
-  --danger:#ff9a9a;--good:#8fe0b0;--radius:20px
+  --danger:#ff9a9a;--good:#8fe0b0;--radius:18px
 }
-*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;min-height:100vh;min-height:100dvh;background:radial-gradient(ellipse at 50% -15%,#1d3544 0,transparent 55%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
-.app{width:min(100%,760px);min-height:100vh;min-height:100dvh;margin:auto;padding:12px 16px max(18px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:13px}
-header{display:flex;align-items:center;justify-content:space-between;padding:4px 2px}
-.brand{text-align:center}.brand strong{font-size:19px;letter-spacing:.2px}.brand small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
-.iconbtn{width:42px;height:42px;border:1px solid transparent;border-radius:50%;background:transparent;color:var(--text);font-size:20px;display:grid;place-items:center}.iconbtn:hover{background:var(--panel2);border-color:var(--line)}
-.status{font-size:11px;color:var(--muted);padding:5px 9px;border:1px solid var(--line);border-radius:99px;display:inline-block;margin-top:4px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle}
-.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--danger)}.dot.ready{background:var(--good)}
-.card{background:linear-gradient(160deg,#1c272e,#172027);border:1px solid #ffffff12;border-radius:var(--radius);padding:15px;box-shadow:0 12px 35px #0002}
-.langrow{display:grid;grid-template-columns:minmax(0,1fr) 42px minmax(0,1fr);align-items:center;gap:8px;margin-bottom:12px}
-.lang{width:100%;min-width:0;border:1px solid var(--line);border-radius:13px;padding:11px 8px;background:var(--panel2);color:var(--text);font-size:14px;appearance:none;}
-.swap{width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:var(--panel3);color:var(--accent);font-size:20px;display:grid;place-items:center;}
-textarea{width:100%;min-height:126px;resize:vertical;border:0;outline:0;background:transparent;color:var(--text);font-size:19px;line-height:1.5;padding:8px 3px}
+*{box-sizing:border-box}
+html{background:var(--bg);height:100%}
+body{
+  margin:0;min-height:100vh;min-height:100dvh;
+  background:radial-gradient(ellipse at 50% -15%,#1d3544 0,transparent 55%),var(--bg);
+  color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  display:flex;flex-direction:column
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+.app{
+  width:min(100%,760px);height:100dvh;min-height:100dvh;margin:auto;
+  padding:8px 12px max(10px,env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:8px;overflow:hidden
+}
+header{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-shrink:0}
+.brand{text-align:center;min-width:0;flex:1}
+.brand strong{font-size:17px;letter-spacing:.2px;display:block;line-height:1.15}
+.iconbtn{
+  width:36px;height:36px;border:1px solid transparent;border-radius:50%;
+  background:transparent;color:var(--text);font-size:18px;display:grid;place-items:center;flex-shrink:0
+}
+.iconbtn:hover{background:var(--panel2);border-color:var(--line)}
+.status{
+  font-size:10.5px;color:var(--muted);padding:3px 9px;border:1px solid var(--line);
+  border-radius:99px;display:inline-block;margin-top:3px;max-width:250px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle
+}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--danger)}
+.dot.ready{background:var(--good)}
+.error{
+  display:none;padding:8px 11px;border:1px solid #75464b;background:#3b2025;
+  color:#ffc1c1;border-radius:12px;font-size:12px;line-height:1.4;
+  overflow-wrap:anywhere;white-space:pre-wrap;max-height:76px;overflow-y:auto;flex-shrink:0
+}
+.card{
+  background:linear-gradient(160deg,#1c272e,#172027);border:1px solid #ffffff12;
+  border-radius:var(--radius);padding:11px;box-shadow:0 10px 28px #0002;
+  display:flex;flex-direction:column;gap:8px;min-height:0;flex:1;overflow-y:auto;
+  -webkit-overflow-scrolling:touch
+}
+.langrow{display:grid;grid-template-columns:minmax(0,1fr) 36px minmax(0,1fr);align-items:center;gap:6px;flex-shrink:0}
+.lang{
+  width:100%;min-width:0;border:1px solid var(--line);border-radius:11px;
+  padding:8px 8px;background:var(--panel2);color:var(--text);font-size:13px;appearance:none
+}
+.swap{
+  width:36px;height:36px;border:1px solid var(--line);border-radius:50%;
+  background:var(--panel3);color:var(--accent);font-size:18px;display:grid;place-items:center
+}
+.io-box{
+  display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);
+  border-radius:14px;padding:9px 10px;background:#10171c99;min-height:0;flex:1;
+  overflow-y:auto;-webkit-overflow-scrolling:touch
+}
+textarea{
+  width:100%;min-height:64px;max-height:110px;resize:vertical;border:0;outline:0;
+  background:transparent;color:var(--text);font-size:16px;line-height:1.42;padding:2px;flex-shrink:0
+}
 textarea::placeholder{color:#81929c}
-.row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.tools,.actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
-.btn{border:1px solid var(--line);border-radius:99px;background:var(--panel2);color:var(--text);padding:9px 13px;font-size:13px;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;gap:6px;}
-.btn:hover{border-color:#607988;background:var(--panel3);}.btn.primary{background:var(--accent);border-color:transparent;color:#08243a;font-weight:700}.btn.ghost{background:transparent}.btn.selected{background:#24465a;border-color:#4e7891;color:var(--accent2)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;flex-shrink:0}
+.tools{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.btn{
+  border:1px solid var(--line);border-radius:99px;background:var(--panel2);
+  color:var(--text);padding:6px 11px;font-size:12px;transition:all .15s;
+  display:inline-flex;align-items:center;justify-content:center;gap:5px
+}
+.btn:hover{border-color:#607988;background:var(--panel3)}
+.btn.primary{background:var(--accent);border-color:transparent;color:#08243a;font-weight:700}
+.btn.ghost{background:transparent}
 .small{font-size:11px;color:var(--muted)}
-.error{display:none;padding:11px 13px;border:1px solid #75464b;background:#3b2025;color:#ffc1c1;border-radius:13px;font-size:13px;line-height:1.5;overflow-wrap:anywhere;white-space:pre-wrap}
-.panel{display:none;flex-direction:column;gap:10px;padding:12px;border:1px solid var(--line);border-radius:15px;background:#111a20;margin-top:10px;}
-.stage{height:180px;border:1px dashed #60717b;border-radius:11px;overflow:hidden;background:#ffffff;touch-action:none}
+.panel{
+  display:none;flex-direction:column;gap:8px;padding:9px;border:1px solid var(--line);
+  border-radius:13px;background:#111a20;flex-shrink:0
+}
+.stage{height:130px;border:1px dashed #60717b;border-radius:10px;overflow:hidden;background:#ffffff;touch-action:none}
 canvas{display:block;width:100%;height:100%;touch-action:none}
-.preview{display:none;align-items:center;justify-content:center;min-height:90px;max-height:230px;overflow:hidden;border-radius:12px;background:#0d1419;margin-bottom:10px;}
-.preview img{display:block;max-width:100%;max-height:220px;object-fit:contain}
-.result{display:none}
-.result-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
-.result-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700}
-.result-text{font-size:23px;line-height:1.48;font-weight:650;white-space:pre-wrap;overflow-wrap:anywhere}
-.pinyin{margin-top:9px;color:var(--accent);font-size:14px;line-height:1.5;overflow-wrap:anywhere;display:none;}
-.explain{display:none;margin-top:13px;padding:12px;border-left:3px solid var(--accent);background:#142631;border-radius:9px;font-size:13px;line-height:1.6;white-space:pre-wrap}
-.extra{display:none;margin-top:10px;gap:8px;flex-direction:column}
-.extra-item{padding:10px 12px;background:var(--panel2);border-radius:11px;font-size:13px;line-height:1.5;white-space:pre-wrap}
+.preview{
+  display:none;align-items:center;justify-content:center;min-height:68px;max-height:140px;
+  overflow:hidden;border-radius:10px;background:#0d1419
+}
+.preview img{display:block;max-width:100%;max-height:132px;object-fit:contain}
+.divider{height:1px;background:#ffffff14;margin:2px 0;flex-shrink:0}
+.result{
+  display:none;flex-direction:column;gap:6px;padding-top:2px;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;flex-shrink:0
+}
+.result-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.result-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--accent);font-weight:700}
+.result-text{font-size:18px;line-height:1.45;font-weight:600;white-space:pre-wrap;overflow-wrap:anywhere}
+.pinyin{color:var(--accent2);font-size:13px;line-height:1.4;overflow-wrap:anywhere;display:none}
+.explain{
+  display:none;padding:8px 10px;border-left:3px solid var(--accent);
+  background:#142631;border-radius:8px;font-size:12px;line-height:1.5;white-space:pre-wrap
+}
+.extra{display:none;gap:6px;flex-direction:column}
+.extra-item{padding:8px 10px;background:var(--panel2);border-radius:10px;font-size:12px;line-height:1.45;white-space:pre-wrap}
 .extra-item b{color:var(--accent2)}
-.spinner{display:none;width:14px;height:14px;border:2px solid #092b4544;border-top-color:#092b45;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
+.spinner{
+  display:none;width:13px;height:13px;border:2px solid #092b4544;
+  border-top-color:#092b45;border-radius:50%;animation:spin .65s linear infinite
+}
 @keyframes spin{to{transform:rotate(360deg)}}
-.bottom{margin-top:auto;display:flex;flex-direction:column;gap:12px;padding-top:5px}
-.main-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.main-actions button{padding:13px 10px}
-.dock{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;justify-items:center;padding:5px 5px 2px}
-.dockbtn{display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:transparent;color:var(--muted);font-size:11px;transition:color .2s;}
-.dockcircle{width:48px;height:48px;border-radius:17px;background:var(--panel3);display:grid;place-items:center;font-size:21px;color:var(--accent);transition:all .2s;}
-.dockbtn.active .dockcircle{background:#583238;color:#ffb8b8}
-.mic{width:70px;height:70px;border:0;border-radius:23px;background:var(--accent);color:#08243a;font-size:26px;box-shadow:0 8px 25px #8ecbff22;transition:all .2s;display:grid;place-items:center;}
-.mic.recording{background:#ff8c8c;color:#351010;border-radius:50%;animation:pulse 1.1s infinite}
-@keyframes pulse{50%{box-shadow:0 0 0 13px #ff8c8c00}}
-.live{display:none;gap:11px;margin-top:10px;}
-.feed{display:flex;flex-direction:column;gap:9px;max-height:280px;min-height:115px;overflow:auto;padding:10px;background:#10171c;border:1px solid var(--line);border-radius:13px}
-.bubble{max-width:90%;padding:10px 12px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
-.bubble.left{align-self:flex-start;background:var(--panel2)}.bubble.right{align-self:flex-end;background:#1d4055}
-.bubble small{display:block;color:var(--muted);font-size:11px;margin-top:5px}
-.turnrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.turn{padding:12px 8px;border:1px solid var(--line);border-radius:13px;background:var(--panel2);color:var(--text);font-size:13px;transition:all .2s;}
+.live{
+  display:none;flex-direction:column;gap:8px;padding:10px;border:1px solid var(--line);
+  border-radius:14px;background:#111a20;flex-shrink:0
+}
+.feed{
+  display:flex;flex-direction:column;gap:7px;max-height:135px;min-height:70px;
+  overflow-y:auto;padding:8px;background:#10171c;border:1px solid var(--line);border-radius:11px
+}
+.bubble{max-width:90%;padding:8px 10px;border-radius:12px;font-size:13px;line-height:1.42;white-space:pre-wrap;overflow-wrap:anywhere}
+.bubble.left{align-self:flex-start;background:var(--panel2)}
+.bubble.right{align-self:flex-end;background:#1d4055}
+.bubble small{display:block;color:var(--muted);font-size:10.5px;margin-top:3px}
+.turnrow{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.turn{
+  padding:8px 6px;border:1px solid var(--line);border-radius:11px;
+  background:var(--panel2);color:var(--text);font-size:12px;transition:all .15s
+}
 .turn.active{background:#48272c;border-color:#d77e84;color:#ffc1c1}
-.modal{display:none;position:fixed;inset:0;z-index:50;background:#000b;align-items:center;justify-content:center;padding:16px}
-.modalbox{width:min(100%,480px);max-height:90dvh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:19px}
-.modalbox h2{font-size:18px;margin:0 0 7px}.modalbox p{font-size:12px;color:var(--muted);line-height:1.55;margin:0 0 13px}
-.field{margin:12px 0}.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}
-.field input,.field select{width:100%;padding:11px 12px;border-radius:10px;background:#10171c;border:1px solid var(--line);color:var(--text);outline:none;}
-.field input:focus,.field select:focus{border-color:var(--accent);}
-.modalfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}
+.bottom{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+.main-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.main-actions button{padding:10px 8px;font-size:13px}
+.dock{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;justify-items:center;padding:2px 4px 0}
+.dockbtn{
+  display:flex;flex-direction:column;align-items:center;gap:3px;border:0;
+  background:transparent;color:var(--muted);font-size:10.5px;transition:color .15s
+}
+.dockcircle{
+  width:40px;height:40px;border-radius:14px;background:var(--panel3);
+  display:grid;place-items:center;font-size:18px;color:var(--accent);transition:all .15s
+}
+.dockbtn.active .dockcircle{background:#583238;color:#ffb8b8}
+.mic{
+  width:54px;height:54px;border:0;border-radius:18px;background:var(--accent);
+  color:#08243a;font-size:22px;box-shadow:0 6px 20px #8ecbff22;
+  transition:all .15s;display:grid;place-items:center
+}
+.mic.recording{background:#ff8c8c;color:#351010;border-radius:50%;animation:pulse 1.1s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 10px #ff8c8c00}}
+.modal{
+  display:none;position:fixed;inset:0;z-index:50;background:#000b;
+  align-items:center;justify-content:center;padding:14px
+}
+.modalbox{
+  width:min(100%,480px);max-height:90dvh;overflow-y:auto;background:var(--panel);
+  border:1px solid var(--line);border-radius:18px;padding:16px
+}
+.modalbox h2{font-size:17px;margin:0 0 6px}
+.modalbox p{font-size:12px;color:var(--muted);line-height:1.5;margin:0 0 10px}
+.field{margin:10px 0}
+.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}
+.field input,.field select{
+  width:100%;padding:10px 11px;border-radius:10px;background:#10171c;
+  border:1px solid var(--line);color:var(--text);outline:none
+}
+.field input:focus,.field select:focus{border-color:var(--accent)}
+.modalfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
 a{color:var(--accent)}
-@media(max-width:390px){.app{padding-left:11px;padding-right:11px}.card{padding:12px}.result-text{font-size:21px}.lang{font-size:12px}}
 </style>
 </head>
 <body>
@@ -81,96 +179,119 @@ a{color:var(--accent)}
 <header>
   <button class="iconbtn" id="resetBtn" aria-label="Làm mới" title="Làm mới">↺</button>
   <div class="brand">
-    <strong id="brandTitle">AI Translation</strong>
+    <strong>AI Translation</strong>
     <div><span class="status" id="statusPill">Đang tải...</span></div>
   </div>
   <div style="position:relative;">
     <button class="iconbtn" id="settingsBtn" aria-label="Cài đặt" title="Cài đặt">⚙</button>
-    <i class="dot" id="keyDot" style="position:absolute; top:7px; right:7px;"></i>
+    <i class="dot" id="keyDot" style="position:absolute; top:5px; right:5px;"></i>
   </div>
 </header>
 
 <div class="error" id="errorBox" role="alert"></div>
 
-<section class="card">
+<section class="card" id="mainCard">
   <div class="langrow">
     <select class="lang" id="sourceLang" aria-label="Ngôn ngữ nguồn"></select>
     <button class="swap" id="swapBtn" title="Đổi ngôn ngữ" aria-label="Đổi ngôn ngữ">⇄</button>
     <select class="lang" id="targetLang" aria-label="Ngôn ngữ đích"></select>
   </div>
-  <textarea id="sourceText" placeholder="Nhập nội dung cần dịch..." spellcheck="true"></textarea>
 
-  <div class="row">
-    <div class="tools">
-      <button class="btn" id="clearTextBtn">Xóa</button>
-      <button class="btn" id="pasteBtn">Dán</button>
-      <button class="btn" id="drawToggle">✍ Viết tay</button>
-      <button class="btn" id="imageToggle">▧ Ảnh</button>
-    </div>
-    <span class="small" id="charCount">0 ký tự</span>
-  </div>
+  <div class="io-box" id="ioBox">
+    <textarea id="sourceText" placeholder="Nhập nội dung cần dịch..." spellcheck="true"></textarea>
 
-  <!-- Bảng vẽ -->
-  <div class="panel" id="drawPanel">
-    <div class="stage"><canvas id="drawCanvas"></canvas></div>
     <div class="row">
       <div class="tools">
-        <button class="btn" id="undoDraw">↶ Hoàn tác</button>
-        <button class="btn" id="clearDraw">Xóa nét</button>
-        <select class="btn" id="brushSize" aria-label="Cỡ bút">
-          <option value="2" id="brushThinOpt">Mảnh</option>
-          <option value="4" id="brushMedOpt" selected>Vừa</option>
-          <option value="7" id="brushThickOpt">Đậm</option>
-        </select>
+        <button class="btn" id="clearTextBtn"><span class="btn-label">Xóa</span></button>
+        <button class="btn" id="pasteBtn"><span class="btn-label">Dán</span></button>
+        <button class="btn" id="drawToggle"><span class="btn-label">✍ Viết tay</span></button>
+        <button class="btn" id="imageToggle"><span class="btn-label">▧ Ảnh</span></button>
       </div>
-      <button class="btn primary" id="translateDrawBtn">Dịch chữ viết <i class="spinner" id="drawSpinner"></i></button>
+      <span class="small" id="charCount">0 ký tự</span>
+    </div>
+
+    <!-- Bảng vẽ -->
+    <div class="panel" id="drawPanel">
+      <div class="stage"><canvas id="drawCanvas"></canvas></div>
+      <div class="row">
+        <div class="tools">
+          <button class="btn" id="undoDraw"><span class="btn-label">↶ Hoàn tác</span></button>
+          <button class="btn" id="clearDraw"><span class="btn-label">Xóa nét</span></button>
+          <select class="btn" id="brushSize" aria-label="Cỡ bút">
+            <option value="2" id="brushThinOpt">Mảnh</option>
+            <option value="4" id="brushMedOpt" selected>Vừa</option>
+            <option value="7" id="brushThickOpt">Đậm</option>
+          </select>
+        </div>
+        <button class="btn primary" id="translateDrawBtn">
+          <span class="btn-label">Dịch chữ viết</span>
+          <i class="spinner" id="drawSpinner"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tải ảnh -->
+    <div class="panel" id="imagePanel">
+      <div class="preview" id="imagePreviewWrap"><img id="imagePreview" alt="Ảnh cần dịch"></div>
+      <div class="row">
+        <div class="tools">
+          <button class="btn" id="chooseImageBtn"><span class="btn-label">Chọn ảnh</span></button>
+          <button class="btn" id="removeImageBtn"><span class="btn-label">Bỏ ảnh</span></button>
+        </div>
+        <button class="btn primary" id="translateImageBtn">
+          <span class="btn-label">Dịch nội dung ảnh</span>
+          <i class="spinner" id="imageSpinner"></i>
+        </button>
+      </div>
+      <input type="file" id="imageFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+      <div class="small" id="imageHint">Hỗ trợ PNG, JPG, WebP, GIF. Tối đa 12 MB.</div>
+    </div>
+
+    <!-- Kết quả nằm gọn trong cùng 1 ô -->
+    <div class="result" id="resultSection" aria-live="polite">
+      <div class="divider"></div>
+      <div class="result-head">
+        <span class="result-label" id="resultLabel">Bản dịch</span>
+        <div class="tools">
+          <button class="btn" id="copyBtn"><span class="btn-label">Sao chép</span></button>
+          <button class="btn" id="speakBtn"><span class="btn-label">🔊 Đọc</span></button>
+        </div>
+      </div>
+      <div class="result-text" id="resultText"></div>
+      <div class="pinyin" id="pinyinText"></div>
+      <div class="explain" id="explanation"></div>
+      <div class="extra" id="alternatives"></div>
     </div>
   </div>
 
-  <!-- Tải ảnh -->
-  <div class="panel" id="imagePanel">
-    <div class="preview" id="imagePreviewWrap"><img id="imagePreview" alt="Ảnh cần dịch"></div>
+  <!-- Hội thoại trực tiếp -->
+  <section class="live" id="livePanel">
     <div class="row">
-      <div class="tools">
-        <button class="btn" id="chooseImageBtn">Chọn ảnh</button>
-        <button class="btn" id="removeImageBtn">Bỏ ảnh</button>
-      </div>
-      <button class="btn primary" id="translateImageBtn">Dịch nội dung ảnh <i class="spinner" id="imageSpinner"></i></button>
+      <b id="liveTitle">Hội thoại trực tiếp</b>
+      <button class="btn" id="clearLiveBtn"><span class="btn-label">Xóa hội thoại</span></button>
     </div>
-    <input type="file" id="imageFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
-    <div class="small" id="imageHint">Hỗ trợ PNG, JPG, WebP, GIF. Tối đa 12 MB.</div>
-  </div>
-</section>
-
-<section class="card result" id="resultCard" aria-live="polite">
-  <div class="result-head">
-    <span class="result-label" id="resultLabel">Bản dịch</span>
-    <div class="tools">
-      <button class="btn" id="copyBtn">Sao chép</button>
-      <button class="btn" id="speakBtn">🔊 Đọc</button>
+    <div class="small" id="liveDesc">Chọn lượt nói. Ứng dụng ghi âm, nhận dạng và dịch sang ngôn ngữ còn lại. Chạm lại nút đang ghi để dừng.</div>
+    <div class="feed" id="liveFeed"><div class="small" id="liveEmptyText">Chưa có nội dung hội thoại.</div></div>
+    <div class="turnrow">
+      <button class="turn" id="sideABtn">🎙 Người A</button>
+      <button class="turn" id="sideBBtn">🎙 Người B</button>
     </div>
-  </div>
-  <div class="result-text" id="resultText"></div>
-  <div class="pinyin" id="pinyinText"></div>
-  <div class="explain" id="explanation"></div>
-  <div class="extra" id="alternatives"></div>
-</section>
-
-<section class="card live" id="livePanel">
-  <div class="row"><b id="liveTitle">Hội thoại trực tiếp</b><button class="btn" id="clearLiveBtn">Xóa hội thoại</button></div>
-  <div class="small" id="liveDesc">Chọn lượt nói. Ứng dụng ghi âm, nhận dạng và dịch sang ngôn ngữ còn lại. Chạm lại nút đang ghi để dừng.</div>
-  <div class="feed" id="liveFeed"><div class="small" id="liveEmptyText">Chưa có nội dung hội thoại.</div></div>
-  <div class="turnrow">
-    <button class="turn" id="sideABtn">🎙 Người A</button>
-    <button class="turn" id="sideBBtn">🎙 Người B</button>
-  </div>
-  <div class="row"><span class="small" id="liveStatus">Đang chờ người nói.</span><button class="btn ghost" id="stopLiveBtn">Dừng ghi âm</button></div>
+    <div class="row">
+      <span class="small" id="liveStatus">Đang chờ người nói.</span>
+      <button class="btn ghost" id="stopLiveBtn"><span class="btn-label">Dừng ghi âm</span></button>
+    </div>
+  </section>
 </section>
 
 <div class="bottom">
   <div class="main-actions">
-    <button class="btn primary" id="translateBtn">Dịch văn bản <i class="spinner" id="translateSpinner"></i></button>
-    <button class="btn" id="polishBtn">Dịch tự nhiên hơn</button>
+    <button class="btn primary" id="translateBtn">
+      <span class="btn-label">Dịch văn bản</span>
+      <i class="spinner" id="translateSpinner"></i>
+    </button>
+    <button class="btn" id="polishBtn">
+      <span class="btn-label">Dịch tự nhiên hơn</span>
+    </button>
   </div>
   <div class="dock">
     <button class="dockbtn" id="liveToggle"><span class="dockcircle">⇄</span><span id="liveDockLabel">Hội thoại</span></button>
@@ -185,7 +306,7 @@ a{color:var(--accent)}
 <div class="modal" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
  <div class="modalbox">
   <h2 id="settingsTitle">Cài đặt Gemini API</h2>
-  <p id="settingsDesc">API Key được lưu trong trình duyệt của bạn (<code>localStorage</code>) và gửi trực tiếp tới Google. <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" id="getKeyLink">Lấy API Key tại đây</a>.</p>
+  <p id="settingsDesc">API Key được lưu trong trình duyệt của bạn (<code>localStorage</code>) và gửi trực tiếp tới Google. <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">Lấy API Key tại đây</a>.</p>
   <div class="field">
     <label for="uiLangSelect" id="uiLangLabel">Ngôn ngữ giao diện</label>
     <select id="uiLangSelect">
@@ -214,8 +335,8 @@ a{color:var(--accent)}
     <input id="customModelInput" type="text" placeholder="Ví dụ: gemini-3.8-flash" spellcheck="false">
   </div>
   <div class="modalfoot">
-    <button class="btn" id="cancelSettings">Đóng</button>
-    <button class="btn primary" id="saveSettings">Lưu cài đặt</button>
+    <button class="btn" id="cancelSettings"><span class="btn-label">Đóng</span></button>
+    <button class="btn primary" id="saveSettings"><span class="btn-label">Lưu cài đặt</span></button>
   </div>
  </div>
 </div>
@@ -226,9 +347,9 @@ a{color:var(--accent)}
 /* ============================ CẤU HÌNH ============================ */
 const CONFIG = {
   apiBase: "https://generativelanguage.googleapis.com/v1beta/models/",
-  requestTimeoutMs: 75000,
+  requestTimeoutMs: 45000,
   maxImageBytes: 12 * 1024 * 1024,
-  maxImageDimension: 1600,
+  maxImageDimension: 1400,
   maxAudioBytes: 18 * 1024 * 1024,
   defaultModel: "gemini-3.8-flash"
 };
@@ -262,11 +383,11 @@ const LANGUAGES = [
 
 const I18N = {
   vi: {
-    pageTitle: "Dịch Thông Minh – Đa Ngôn Ngữ",
-    brandTitle: "Dịch Thông Minh",
+    pageTitle: "AI Translation",
     ready: "Sẵn sàng",
     noKey: "Chưa có API Key",
     tryingFallback: "Đang thử model dự phòng...",
+    switchedModel: m => `Đã tự động đổi sang model ${m}.`,
     placeholder: "Nhập nội dung cần dịch...",
     clear: "Xóa",
     paste: "Dán",
@@ -328,11 +449,11 @@ const I18N = {
     errNoMedia: "Trình duyệt không hỗ trợ ghi âm. Hãy dùng trình duyệt hiện đại và cấp quyền micro."
   },
   en: {
-    pageTitle: "Smart Translate – Multilingual",
-    brandTitle: "Smart Translate",
+    pageTitle: "AI Translation",
     ready: "Ready",
     noKey: "No API Key",
     tryingFallback: "Trying fallback model...",
+    switchedModel: m => `Switched to working model ${m}.`,
     placeholder: "Enter text to translate...",
     clear: "Clear",
     paste: "Paste",
@@ -394,11 +515,11 @@ const I18N = {
     errNoMedia: "Your browser does not support audio recording. Use a modern browser and grant mic access."
   },
   zh: {
-    pageTitle: "智能翻译 – 多语言",
-    brandTitle: "智能翻译",
+    pageTitle: "AI Translation",
     ready: "就绪",
     noKey: "未设置 API Key",
     tryingFallback: "正在尝试备用模型...",
+    switchedModel: m => `已自动切换至可用模型 ${m}。`,
     placeholder: "输入要翻译的内容...",
     clear: "清空",
     paste: "粘贴",
@@ -490,8 +611,9 @@ const el = {
   error: $("errorBox"),
   status: $("statusPill"),
   keyDot: $("keyDot"),
+  ioBox: $("ioBox"),
   source: $("sourceText"),
-  result: $("resultCard"),
+  resultSection: $("resultSection"),
   resultText: $("resultText"),
   pinyin: $("pinyinText"),
   explanation: $("explanation"),
@@ -508,6 +630,12 @@ const el = {
   liveStatus: $("liveStatus"),
   mic: $("micBtn")
 };
+
+function setBtnLabel(btnId, text) {
+  const btn = $(btnId);
+  const label = btn?.querySelector(".btn-label");
+  if (label) label.textContent = text;
+}
 
 function t(key, ...args) {
   const pack = I18N[state.uiLang] || I18N.vi;
@@ -546,33 +674,32 @@ function populateLanguageSelects() {
 function applyUILanguage() {
   document.documentElement.lang = state.uiLang;
   document.title = t("pageTitle");
-  $("brandTitle").textContent = t("brandTitle");
   el.source.placeholder = t("placeholder");
-  $("clearTextBtn").textContent = t("clear");
-  $("pasteBtn").textContent = t("paste");
-  $("drawToggle").textContent = t("draw");
-  $("imageToggle").textContent = t("image");
-  $("undoDraw").textContent = t("undo");
-  $("clearDraw").textContent = t("clearDraw");
+  setBtnLabel("clearTextBtn", t("clear"));
+  setBtnLabel("pasteBtn", t("paste"));
+  setBtnLabel("drawToggle", t("draw"));
+  setBtnLabel("imageToggle", t("image"));
+  setBtnLabel("undoDraw", t("undo"));
+  setBtnLabel("clearDraw", t("clearDraw"));
   $("brushThinOpt").textContent = t("thin");
   $("brushMedOpt").textContent = t("medium");
   $("brushThickOpt").textContent = t("thick");
-  $("translateDrawBtn").firstChild.textContent = t("translateDraw") + " ";
-  $("chooseImageBtn").textContent = t("chooseImage");
-  $("removeImageBtn").textContent = t("removeImage");
-  $("translateImageBtn").firstChild.textContent = t("translateImage") + " ";
+  setBtnLabel("translateDrawBtn", t("translateDraw"));
+  setBtnLabel("chooseImageBtn", t("chooseImage"));
+  setBtnLabel("removeImageBtn", t("removeImage"));
+  setBtnLabel("translateImageBtn", t("translateImage"));
   $("imageHint").textContent = t("imageHint");
   $("resultLabel").textContent = t("resultLabel");
-  $("copyBtn").textContent = t("copy");
-  $("speakBtn").textContent = t("speak");
+  setBtnLabel("copyBtn", t("copy"));
+  setBtnLabel("speakBtn", t("speak"));
   $("liveTitle").textContent = t("liveTitle");
-  $("clearLiveBtn").textContent = t("clearLive");
+  setBtnLabel("clearLiveBtn", t("clearLive"));
   $("liveDesc").textContent = t("liveDesc");
   const emptyFeed = el.liveFeed.querySelector("#liveEmptyText");
   if (emptyFeed) emptyFeed.textContent = t("liveEmpty");
-  $("stopLiveBtn").textContent = t("stopLive");
-  $("translateBtn").firstChild.textContent = t("translateBtn") + " ";
-  $("polishBtn").textContent = t("polishBtn");
+  setBtnLabel("stopLiveBtn", t("stopLive"));
+  setBtnLabel("translateBtn", t("translateBtn"));
+  setBtnLabel("polishBtn", t("polishBtn"));
   $("liveDockLabel").textContent = t("liveDock");
   $("ttsSourceLabel").textContent = t("ttsSource");
   $("disclaimerText").textContent = t("disclaimer");
@@ -584,8 +711,8 @@ function applyUILanguage() {
   $("modelLabel").textContent = t("modelLabel");
   $("customModelOption").textContent = t("customModelOption");
   $("customModelLabel").textContent = t("customModelLabel");
-  $("cancelSettings").textContent = t("close");
-  $("saveSettings").textContent = t("save");
+  setBtnLabel("cancelSettings", t("close"));
+  setBtnLabel("saveSettings", t("save"));
 
   $("resetBtn").title = $("resetBtn").ariaLabel = t("resetLabel");
   $("settingsBtn").title = $("settingsBtn").ariaLabel = t("settingsLabel");
@@ -602,15 +729,15 @@ function applyUILanguage() {
 function showError(message) {
   el.error.textContent = String(message || t("errUnknown"));
   el.error.style.display = "block";
-  el.error.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 function clearError() {
   el.error.textContent = "";
   el.error.style.display = "none";
 }
-function setStatus() {
+function setStatus(extraNote = "") {
   const ready = Boolean(state.apiKey.trim());
-  el.status.textContent = ready ? `${t("ready")} • ${state.model}` : t("noKey");
+  const base = ready ? `${t("ready")} • ${state.model}` : t("noKey");
+  el.status.textContent = extraNote ? `${base} • ${extraNote}` : base;
   el.keyDot.classList.toggle("ready", ready);
 }
 function setBusy(busy, spinnerId) {
@@ -668,6 +795,21 @@ function stopStream(stream) {
   if (stream) stream.getTracks().forEach(track => { try { track.stop(); } catch (_) {} });
 }
 
+function persistModelSelection(newModel) {
+  const clean = newModel.trim();
+  if (!clean) return;
+  const prev = state.model.trim();
+  state.model = clean;
+  try {
+    localStorage.setItem("smart_translate_model_v5", clean);
+  } catch (_) {}
+  if (prev !== clean) {
+    setStatus(t("switchedModel", clean));
+  } else {
+    setStatus();
+  }
+}
+
 /* ============================ XỬ LÝ ẢNH ============================ */
 function fileToDataUrl(file) {
   return new Promise((resolve, reject) => {
@@ -700,18 +842,18 @@ async function optimizeImage(file) {
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-  return canvas.toDataURL("image/jpeg", 0.88);
+  return canvas.toDataURL("image/jpeg", 0.85);
 }
 
-/* ============================ GEMINI API (TÍCH HỢP FALLBACK) ============================ */
+/* ============================ GEMINI API (TỰ ĐỘNG ĐỔI MODEL OK) ============================ */
 async function rawGeminiRequest(modelName, parts, options) {
-  const { systemInstruction, temperature = 0.2, maxOutputTokens = 2400, timeoutMs = CONFIG.requestTimeoutMs } = options;
+  const { systemInstruction, temperature = 0.1, maxOutputTokens = 1600, timeoutMs = CONFIG.requestTimeoutMs } = options;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   const url = CONFIG.apiBase + encodeURIComponent(modelName.trim()) + ":generateContent";
 
   const body = {
-    systemInstruction: { parts: [{ text: systemInstruction || "You are a professional translator." }] },
+    systemInstruction: { parts: [{ text: systemInstruction || "Fast accurate translator. Return valid JSON." }] },
     contents: [{ role: "user", parts }],
     generationConfig: {
       temperature,
@@ -753,9 +895,15 @@ async function rawGeminiRequest(modelName, parts, options) {
     });
   } catch (error) {
     clearTimeout(timer);
-    if (error.name === "AbortError") throw new Error("Yêu cầu đã quá thời gian chờ. Hãy thử lại.");
+    if (error.name === "AbortError") {
+      const err = new Error("Yêu cầu quá thời gian chờ.");
+      err.retryable = true;
+      throw err;
+    }
     if (!navigator.onLine) throw new Error("Thiết bị đang ngoại tuyến.");
-    throw new Error("Không kết nối được Gemini API: " + (error.message || "lỗi mạng"));
+    const err = new Error("Lỗi kết nối mạng: " + (error.message || "network"));
+    err.retryable = true;
+    throw err;
   }
 
   let raw;
@@ -763,7 +911,9 @@ async function rawGeminiRequest(modelName, parts, options) {
     raw = await response.text();
   } catch (_) {
     clearTimeout(timer);
-    throw new Error("Không đọc được phản hồi từ Gemini.");
+    const err = new Error("Không đọc được phản hồi từ Gemini.");
+    err.retryable = true;
+    throw err;
   }
   clearTimeout(timer);
 
@@ -771,27 +921,39 @@ async function rawGeminiRequest(modelName, parts, options) {
   try {
     data = raw ? JSON.parse(raw) : {};
   } catch (_) {
-    throw new Error(`Gemini trả về dữ liệu không đọc được (HTTP ${response.status}).`);
+    const err = new Error(`Dữ liệu phản hồi không hợp lệ (HTTP ${response.status}).`);
+    err.status = response.status;
+    err.retryable = response.status >= 500;
+    throw err;
   }
 
   if (!response.ok) {
     const msg = data?.error?.message || `HTTP ${response.status}`;
     const err = new Error(msg);
     err.status = response.status;
+    err.retryable = response.status === 404 || response.status === 429 || response.status >= 500;
     throw err;
   }
 
   if (data.promptFeedback?.blockReason) {
-    throw new Error("Yêu cầu bị Gemini chặn: " + data.promptFeedback.blockReason);
+    throw new Error("Yêu cầu bị chặn: " + data.promptFeedback.blockReason);
   }
   const candidate = data.candidates?.[0];
-  if (!candidate) throw new Error("Gemini không trả về kết quả.");
+  if (!candidate) {
+    const err = new Error("Gemini không trả về kết quả.");
+    err.retryable = true;
+    throw err;
+  }
   if (candidate.finishReason === "SAFETY") {
-    throw new Error("Nội dung bị bộ lọc an toàn của Gemini chặn.");
+    throw new Error("Nội dung bị bộ lọc an toàn chặn.");
   }
 
   const text = (candidate.content?.parts || []).map(p => p.text || "").join("").trim();
-  if (!text) throw new Error("Gemini trả về nội dung trống.");
+  if (!text) {
+    const err = new Error("Gemini trả về nội dung trống.");
+    err.retryable = true;
+    throw err;
+  }
   return text;
 }
 
@@ -804,36 +966,40 @@ async function geminiRequest(parts, options = {}) {
   });
 
   let lastError = null;
-  try {
-    for (let i = 0; i < modelsToTry.length; i++) {
-      const currentModel = modelsToTry[i];
-      try {
-        return await rawGeminiRequest(currentModel, parts, options);
-      } catch (err) {
-        lastError = err;
-        if (err.status === 503 || err.status === 404 || err.status === 429) {
-          if (i < modelsToTry.length - 1) {
-            el.status.textContent = t("tryingFallback");
-            continue;
-          }
-        }
-        break;
+  for (let i = 0; i < modelsToTry.length; i++) {
+    const currentModel = modelsToTry[i];
+    try {
+      const rawText = await rawGeminiRequest(currentModel, parts, options);
+      const parsed = parseJsonResponse(rawText);
+      if (options.requireTranslation !== false && !parsed.translation) {
+        const err = new Error("Không có trường bản dịch hợp lệ.");
+        err.retryable = true;
+        throw err;
       }
+      persistModelSelection(currentModel);
+      return parsed;
+    } catch (err) {
+      lastError = err;
+      const canTryNext = (err.retryable || err.status === 503 || err.status === 404 || err.status === 429 || err.status === 500 || err.status === 502 || err.status === 504);
+      if (canTryNext && i < modelsToTry.length - 1) {
+        el.status.textContent = t("tryingFallback");
+        continue;
+      }
+      break;
     }
-  } finally {
-    setStatus();
   }
 
+  setStatus();
   if (!lastError) throw new Error(t("errUnknown"));
   if (lastError.status === 503) {
-    throw new Error("Hệ thống Gemini đang quá tải (503). Vui lòng đợi vài giây và thử lại, hoặc đổi Model trong phần Cài đặt.");
+    throw new Error("Hệ thống Gemini đang quá tải (503). Vui lòng thử lại sau vài giây.");
   }
   if (lastError.status === 400) throw new Error("Yêu cầu không hợp lệ: " + lastError.message);
   if (lastError.status === 401 || lastError.status === 403) {
     throw new Error("API Key không hợp lệ hoặc chưa được cấp quyền: " + lastError.message);
   }
   if (lastError.status === 404) throw new Error("Model không tồn tại hoặc không khả dụng: " + lastError.message);
-  if (lastError.status === 429) throw new Error("Gemini đang giới hạn tốc độ hoặc đã hết quota.");
+  if (lastError.status === 429) throw new Error("Đã vượt giới hạn tốc độ hoặc quota.");
   throw new Error("Lỗi Gemini API: " + lastError.message);
 }
 
@@ -849,22 +1015,22 @@ function parseJsonResponse(text) {
         return JSON.parse(cleaned.slice(first, last + 1));
       } catch (__) {}
     }
-    throw new Error("Không phân tích được định dạng kết quả từ Gemini. Hãy thử lại.");
+    const err = new Error("Không phân tích được JSON từ Gemini.");
+    err.retryable = true;
+    throw err;
   }
 }
 
 function translationPrompt({ mode = "translate", extraContext = "" } = {}) {
   const from = langPrompt(sourceLang());
   const to = langPrompt(targetLang());
-  return `Bạn là chuyên gia biên dịch đa ngôn ngữ, đồng thời là biên dịch viên kỹ thuật nhà máy. Nhiệm vụ: dịch nội dung từ ${from} sang ${to}.
-YÊU CẦU CHẤT LƯỢNG:
-- Giữ nguyên ý nghĩa, dữ kiện, con số, mã máy, tên riêng, ký hiệu, đơn vị, thời gian, mã lỗi và thuật ngữ kỹ thuật.
-- Nếu là tiếng Trung: dùng tiếng Trung giản thể tự nhiên, đúng ngữ pháp, ưu tiên thuật ngữ nhà máy.
-- Nếu dịch sang ngôn ngữ khác: dịch rõ ràng, tự nhiên, đúng ngữ cảnh văn hóa bản địa.
-- Giữ bố cục gạch đầu dòng, xuống dòng, tiêu đề. Với câu giao tiếp, chọn sắc thái lịch sự.
-${mode === "polish" ? "Hãy ưu tiên bản dịch trôi chảy, sát ngữ cảnh và chuẩn văn phong hơn." : ""}
+  return `Dịch từ ${from} sang ${to} (chuyên gia dịch thuật & kỹ thuật nhà máy).
+- Giữ nguyên số, mã máy, mã lỗi, tên riêng, đơn vị, ký hiệu, xuống dòng và bố cục.
+- Tiếng Trung: dùng tiếng Trung giản thể tự nhiên, ưu tiên thuật ngữ nhà máy.
+- Giao tiếp: dùng sắc thái lịch sự, tự nhiên.
+${mode === "polish" ? "- Ưu tiên văn phong mượt mà, tự nhiên hơn." : "- Ưu tiên tốc độ và độ chính xác cao, giữ explanation/alternatives ngắn gọn."}
 ${extraContext}
-CHỈ trả về JSON hợp lệ theo schema được cung cấp.`;
+Trả về JSON đúng schema.`;
 }
 
 async function translateText(mode = "translate", inputOverride = null) {
@@ -889,22 +1055,20 @@ async function translateText(mode = "translate", inputOverride = null) {
 
   try {
     setBusy(true, "translateSpinner");
-    const response = await geminiRequest(
+    const result = await geminiRequest(
       [{ text: input }],
       {
         systemInstruction: translationPrompt({ mode }),
-        temperature: mode === "polish" ? 0.2 : 0.15,
-        maxOutputTokens: 2800
+        temperature: 0.1,
+        maxOutputTokens: mode === "polish" ? 2000 : 1400,
+        requireTranslation: true
       }
     );
-    const result = parseJsonResponse(response);
-    if (!result.translation) throw new Error("Gemini không trả về trường bản dịch hợp lệ.");
     renderResult(result);
   } catch (e) {
     showError(e.message || e);
   } finally {
     setBusy(false, "translateSpinner");
-    setStatus();
   }
 }
 
@@ -922,23 +1086,20 @@ async function translateImage() {
     setBusy(true, "imageSpinner");
     const base64Data = state.imageData.split(",")[1];
     const prompt = translationPrompt({
-      extraContext: "Đây là ảnh có văn bản. Hãy đọc chữ trong ảnh (OCR) rồi dịch toàn bộ phần chữ nhìn thấy."
+      extraContext: "OCR toàn bộ chữ trong ảnh rồi dịch."
     });
-    const text = await geminiRequest(
+    const result = await geminiRequest(
       [
         { text: prompt },
         { inlineData: { mimeType: "image/jpeg", data: base64Data } }
       ],
-      { systemInstruction: "Bạn là chuyên gia OCR và biên dịch. Trả JSON theo schema.", temperature: 0.1, maxOutputTokens: 2800 }
+      { systemInstruction: "OCR và dịch nhanh chính xác. Trả về JSON.", temperature: 0.1, maxOutputTokens: 1800, requireTranslation: true }
     );
-    const result = parseJsonResponse(text);
-    if (!result.translation) throw new Error("Không nhận diện được nội dung chữ trong ảnh.");
     renderResult(result);
   } catch (e) {
     showError(e.message || e);
   } finally {
     setBusy(false, "imageSpinner");
-    setStatus();
   }
 }
 
@@ -956,23 +1117,20 @@ async function translateDrawing() {
     clearError();
     const base64Data = el.canvas.toDataURL("image/png").split(",")[1];
     const prompt = translationPrompt({
-      extraContext: "Đây là ảnh chữ viết tay. Hãy nhận dạng chữ viết tay, sau đó dịch sang ngôn ngữ đích."
+      extraContext: "Nhận dạng chữ viết tay rồi dịch."
     });
-    const text = await geminiRequest(
+    const result = await geminiRequest(
       [
         { text: prompt },
         { inlineData: { mimeType: "image/png", data: base64Data } }
       ],
-      { systemInstruction: "Bạn là chuyên gia nhận dạng chữ viết tay. Trả JSON theo schema.", temperature: 0.1, maxOutputTokens: 2000 }
+      { systemInstruction: "Nhận dạng chữ viết tay và dịch nhanh. Trả về JSON.", temperature: 0.1, maxOutputTokens: 1500, requireTranslation: true }
     );
-    const result = parseJsonResponse(text);
-    if (!result.translation) throw new Error("Không nhận dạng được chữ viết tay.");
     renderResult(result);
   } catch (e) {
     showError(e.message || e);
   } finally {
     setBusy(false, "drawSpinner");
-    setStatus();
   }
 }
 
@@ -985,7 +1143,7 @@ function renderResult(result) {
   el.explanation.style.display = result.explanation ? "block" : "none";
 
   el.alternatives.replaceChildren();
-  const alternatives = Array.isArray(result.alternatives) ? result.alternatives.slice(0, 4) : [];
+  const alternatives = Array.isArray(result.alternatives) ? result.alternatives.slice(0, 3) : [];
   alternatives.forEach(item => {
     const div = document.createElement("div");
     div.className = "extra-item";
@@ -998,8 +1156,8 @@ function renderResult(result) {
   });
   el.alternatives.style.display = alternatives.length ? "flex" : "none";
 
-  el.result.style.display = "block";
-  el.result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  el.resultSection.style.display = "flex";
+  el.ioBox.scrollTop = el.ioBox.scrollHeight;
 }
 
 /* ============================ CANVAS VẼ TAY ============================ */
@@ -1137,8 +1295,8 @@ $("copyBtn").addEventListener("click", async () => {
       ta.remove();
       if (!ok) throw new Error("Trình duyệt không cho phép sao chép.");
     }
-    $("copyBtn").textContent = t("copied");
-    setTimeout(() => { $("copyBtn").textContent = t("copy"); }, 1500);
+    setBtnLabel("copyBtn", t("copied"));
+    setTimeout(() => { setBtnLabel("copyBtn", t("copy")); }, 1500);
   } catch (e) {
     showError("Không thể sao chép: " + e.message);
   }
@@ -1154,7 +1312,7 @@ function speak(text, lang) {
   const langInfo = getLangObj(lang);
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = langInfo?.speech || "en-US";
-  utterance.rate = lang === "Chinese" ? 0.88 : 1;
+  utterance.rate = lang === "Chinese" ? 0.92 : 1;
   const voices = speechSynthesis.getVoices ? speechSynthesis.getVoices() : [];
   const prefix = utterance.lang.toLowerCase().split("-")[0];
   const voice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith(prefix));
@@ -1202,7 +1360,9 @@ function startSpeechInput() {
   state.recognition = recognition;
   state.speechActive = true;
   const langInfo = getLangObj(sourceLang());
-  recognition.lang = (langInfo && langInfo.code !== "auto") ? langInfo.speech : (state.uiLang === "zh" ? "zh-CN" : state.uiLang === "en" ? "en-US" : "vi-VN");
+  recognition.lang = (langInfo && langInfo.code !== "auto")
+    ? langInfo.speech
+    : (state.uiLang === "zh" ? "zh-CN" : state.uiLang === "en" ? "en-US" : "vi-VN");
   recognition.interimResults = true;
   recognition.continuous = false;
 
@@ -1428,44 +1588,42 @@ async function processLiveAudio(blob, mime, side) {
     ].includes(safeMime);
 
     if (!supported) {
-      throw new Error("Định dạng âm thanh " + (safeMime || "không rõ") + " chưa được hỗ trợ bởi Gemini.");
+      throw new Error("Định dạng âm thanh " + (safeMime || "không rõ") + " chưa được hỗ trợ.");
     }
 
     el.liveStatus.textContent = "Đang nhận dạng và dịch…";
     const b64 = await blobToBase64(blob);
-    const prompt = `Nghe đoạn âm thanh được cung cấp. Người nói dự kiến đang nói ${langPrompt(from)}. Hãy nhận dạng chính xác lời nói, sau đó dịch tự nhiên sang ${langPrompt(to)}. Giữ nguyên số, tên riêng, mã thiết bị và thuật ngữ. Nếu không nghe rõ, ghi [không nghe rõ]. CHỈ trả về JSON hợp lệ theo schema.`;
+    const prompt = `Nghe audio (${langPrompt(from)}), phiên âm chính xác rồi dịch tự nhiên sang ${langPrompt(to)}. Giữ nguyên số, tên riêng, mã thiết bị. Nếu không rõ ghi [không nghe rõ]. Trả JSON đúng schema.`;
 
-    const raw = await geminiRequest(
+    const result = await geminiRequest(
       [
         { text: prompt },
         { inlineData: { mimeType: safeMime, data: b64 } }
       ],
       {
-        systemInstruction: "You are a high-accuracy multilingual speech transcription and translation assistant.",
+        systemInstruction: "Phiên âm và dịch hội thoại nhanh chính xác. Trả về JSON.",
         temperature: 0.1,
-        maxOutputTokens: 1600,
-        timeoutMs: 90000
+        maxOutputTokens: 1200,
+        timeoutMs: 60000,
+        requireTranslation: false
       }
     );
 
-    const result = parseJsonResponse(raw);
     if (!result.transcript && !result.translation) {
       throw new Error("Không nhận dạng được lời nói.");
     }
 
-    const transcript = result.transcript || "(Không nhận dạng được)";
+    const transcript = result.transcript || "(...)";
     const translation = result.translation || "";
-
     addBubble(transcript, side, translation);
     if (result.pinyin && to === "Chinese") addBubble("Pinyin: " + result.pinyin, side, "");
-    el.liveStatus.textContent = "Đã dịch xong. Chọn người nói tiếp theo.";
+    el.liveStatus.textContent = "Xong. Chọn người nói tiếp theo.";
     if (translation) speak(translation, to);
   } catch (e) {
     showError(e.message || e);
     el.liveStatus.textContent = "Dịch thất bại. Bạn có thể ghi âm lại.";
   } finally {
     state.isBusy = false;
-    setStatus();
   }
 }
 
@@ -1481,7 +1639,6 @@ $("liveToggle").addEventListener("click", () => {
     el.drawPanel.style.display = "none";
     el.imagePanel.style.display = "none";
     updateLiveLabels();
-    el.livePanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
   } else if (state.liveRecorder || state.liveStarting) {
     stopLiveRecording();
   }
@@ -1555,7 +1712,7 @@ $("swapBtn").addEventListener("click", () => {
     el.source.value = state.lastResult.translation;
     updateCount();
     state.lastResult = null;
-    el.result.style.display = "none";
+    el.resultSection.style.display = "none";
   }
   updateLiveLabels();
 });
@@ -1602,7 +1759,7 @@ function resetApp() {
   el.source.value = "";
   updateCount();
   state.lastResult = null;
-  el.result.style.display = "none";
+  el.resultSection.style.display = "none";
   el.resultText.textContent = "";
   el.pinyin.textContent = "";
   el.explanation.textContent = "";
@@ -1624,6 +1781,7 @@ function resetApp() {
   empty.textContent = t("liveEmpty");
   el.liveFeed.append(empty);
   el.liveStatus.textContent = t("liveWaiting");
+  setStatus();
   clearError();
 }
 $("resetBtn").addEventListener("click", resetApp);
