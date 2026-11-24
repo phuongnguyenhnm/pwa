@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#101418">
-<title>Dịch Thông Minh</title>
+<title>Dịch Thông Minh – Đa Ngôn Ngữ</title>
 <style>
 :root{
   color-scheme:dark;--bg:#101418;--panel:#192127;--panel2:#202b33;--panel3:#27343d;
@@ -97,15 +97,27 @@ a{color:var(--accent)}
   <div class="langrow">
     <select class="lang" id="sourceLang" aria-label="Ngôn ngữ nguồn">
       <option value="Vietnamese">🇻🇳 Tiếng Việt</option>
-      <option value="Chinese">🇨🇳 中文（简体）</option>
-      <option value="English">🇺🇸 English</option>
+      <option value="Chinese">🇨🇳 Tiếng Trung</option>
+      <option value="English">🇺🇸 Tiếng Anh</option>
+      <option value="Japanese">🇯🇵 Tiếng Nhật</option>
+      <option value="Korean">🇰🇷 Tiếng Hàn</option>
+      <option value="French">🇫🇷 Tiếng Pháp</option>
+      <option value="German">🇩🇪 Tiếng Đức</option>
+      <option value="Spanish">🇪🇸 Tiếng Tây Ban Nha</option>
+      <option value="Thai">🇹🇭 Tiếng Thái</option>
       <option value="auto">Tự động nhận diện</option>
     </select>
     <button class="swap" id="swapBtn" title="Đổi ngôn ngữ">⇄</button>
     <select class="lang" id="targetLang" aria-label="Ngôn ngữ đích">
-      <option value="Chinese">🇨🇳 中文（简体）</option>
+      <option value="Chinese">🇨🇳 Tiếng Trung</option>
       <option value="Vietnamese">🇻🇳 Tiếng Việt</option>
-      <option value="English">🇺🇸 English</option>
+      <option value="English">🇺🇸 Tiếng Anh</option>
+      <option value="Japanese">🇯🇵 Tiếng Nhật</option>
+      <option value="Korean">🇰🇷 Tiếng Hàn</option>
+      <option value="French">🇫🇷 Tiếng Pháp</option>
+      <option value="German">🇩🇪 Tiếng Đức</option>
+      <option value="Spanish">🇪🇸 Tiếng Tây Ban Nha</option>
+      <option value="Thai">🇹🇭 Tiếng Thái</option>
     </select>
   </div>
   <textarea id="sourceText" placeholder="Nhập nội dung cần dịch..." spellcheck="true"></textarea>
@@ -171,8 +183,8 @@ a{color:var(--accent)}
   <div class="small">Chọn lượt nói. Ứng dụng ghi âm, nhận dạng và dịch sang ngôn ngữ còn lại. Chạm lại nút đang ghi để dừng.</div>
   <div class="feed" id="liveFeed"><div class="small">Chưa có nội dung hội thoại.</div></div>
   <div class="turnrow">
-    <button class="turn" id="sideABtn">🎙 Người A (Việt)</button>
-    <button class="turn" id="sideBBtn">🎙 Người B (Trung)</button>
+    <button class="turn" id="sideABtn">🎙 Người A</button>
+    <button class="turn" id="sideBBtn">🎙 Người B</button>
   </div>
   <div class="row"><span class="small" id="liveStatus">Đang chờ người nói.</span><button class="btn ghost" id="stopLiveBtn">Dừng ghi âm</button></div>
 </section>
@@ -204,7 +216,7 @@ a{color:var(--accent)}
     <label for="modelName">Gemini Model</label>
     <select id="modelName">
       <option value="gemini-3.8-flash">gemini-3.8-flash (Mặc định)</option>
-      <option value="gemini-2.5-flash">gemini-2.5-flash (Dự phòng)</option>
+      <option value="gemini-2.5-flash">gemini-2.5-flash</option>
       <option value="gemini-2.0-flash">gemini-2.0-flash</option>
       <option value="gemini-1.5-flash">gemini-1.5-flash</option>
       <option value="custom">Tùy chỉnh tên model...</option>
@@ -233,10 +245,13 @@ const CONFIG = {
   maxAudioBytes: 18 * 1024 * 1024
 };
 
+// Danh sách model dự phòng (Fallback) nếu 3.8 bị quá tải
+const FALLBACK_MODELS = ["gemini-3.8-flash", "gemini-2.5-flash", "gemini-2.0-flash"];
+
 const $ = id => document.getElementById(id);
 const state = {
-  apiKey: localStorage.getItem("smart_translate_key_v4") || "",
-  model: localStorage.getItem("smart_translate_model_v4") || "gemini-3.8-flash",
+  apiKey: localStorage.getItem("smart_translate_key_v5") || "",
+  model: localStorage.getItem("smart_translate_model_v5") || "gemini-3.8-flash",
   lastResult: null, 
   imageData: null, imageMime: null,
   isBusy: false, 
@@ -247,12 +262,16 @@ const state = {
 };
 
 const LANG_NAMES = {
-  Vietnamese:"tiếng Việt", 
-  Chinese:"tiếng Trung giản thể", 
-  English:"tiếng Anh", 
+  Vietnamese:"tiếng Việt", Chinese:"tiếng Trung", English:"tiếng Anh", 
+  Japanese:"tiếng Nhật", Korean:"tiếng Hàn", French:"tiếng Pháp", 
+  German:"tiếng Đức", Spanish:"tiếng Tây Ban Nha", Thai:"tiếng Thái", 
   auto:"ngôn ngữ tự động nhận diện"
 };
-const LANG_CODES = {Vietnamese:"vi-VN", Chinese:"zh-CN", English:"en-US"};
+const LANG_CODES = {
+  Vietnamese:"vi-VN", Chinese:"zh-CN", English:"en-US", 
+  Japanese:"ja-JP", Korean:"ko-KR", French:"fr-FR", 
+  German:"de-DE", Spanish:"es-ES", Thai:"th-TH"
+};
 
 const el = {
   error:$("errorBox"), status:$("statusPill"), keyDot:$("keyDot"), source:$("sourceText"),
@@ -352,14 +371,12 @@ async function optimizeImage(file){
   return canvas.toDataURL("image/jpeg", 0.88);
 }
 
-/* ============================ GEMINI API ============================ */
-async function geminiRequest(parts, options = {}) {
-  ensureConfig();
+/* ============================ GEMINI API (TÍCH HỢP FALLBACK) ============================ */
+async function rawGeminiRequest(modelName, parts, options) {
   const { systemInstruction, temperature = 0.2, maxOutputTokens = 1800, timeoutMs = CONFIG.requestTimeoutMs } = options;
-  
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
-  const url = CONFIG.apiBase + encodeURIComponent(state.model.trim()) + ":generateContent";
+  const url = CONFIG.apiBase + encodeURIComponent(modelName.trim()) + ":generateContent";
   
   const body = {
     systemInstruction: { parts: [{ text: systemInstruction || "You are a professional translator." }] },
@@ -371,6 +388,7 @@ async function geminiRequest(parts, options = {}) {
       responseSchema: {
         type: "object",
         properties: {
+          transcript: { type: "string" },
           translation: { type: "string" },
           pinyin: { type: "string" },
           explanation: { type: "string" },
@@ -421,12 +439,9 @@ async function geminiRequest(parts, options = {}) {
 
   if (!response.ok) {
     const msg = data?.error?.message || `HTTP ${response.status}`;
-    if (response.status === 503) throw new Error("Hệ thống Gemini đang quá tải (503). Vui lòng đợi vài giây và thử lại, hoặc đổi Model trong phần Cài đặt.");
-    if (response.status === 400) throw new Error("Yêu cầu không hợp lệ: " + msg);
-    if (response.status === 401 || response.status === 403) throw new Error("API Key không hợp lệ hoặc chưa được cấp quyền: " + msg);
-    if (response.status === 404) throw new Error("Không tìm thấy model. Hãy kiểm tra lại tên model trong Cài đặt: " + msg);
-    if (response.status === 429) throw new Error("Gemini đang giới hạn tốc độ hoặc đã hết quota.");
-    throw new Error("Gemini API lỗi: " + msg);
+    const err = new Error(msg);
+    err.status = response.status;
+    throw err;
   }
   
   if (data.promptFeedback?.blockReason) throw new Error("Yêu cầu bị Gemini chặn: " + data.promptFeedback.blockReason);
@@ -437,6 +452,47 @@ async function geminiRequest(parts, options = {}) {
   const text = (candidate.content?.parts || []).map(p => p.text || "").join("").trim();
   if (!text) throw new Error("Gemini trả về nội dung trống.");
   return text;
+}
+
+async function geminiRequest(parts, options = {}) {
+  ensureConfig();
+  
+  // Tạo danh sách model để thử: Model hiện tại trước, sau đó là fallback
+  let modelsToTry = [state.model.trim()];
+  if (FALLBACK_MODELS.includes(state.model.trim())) {
+    FALLBACK_MODELS.forEach(m => {
+      if (!modelsToTry.includes(m)) modelsToTry.push(m);
+    });
+  }
+
+  let lastError = null;
+  for (let i = 0; i < modelsToTry.length; i++) {
+    const currentModel = modelsToTry[i];
+    try {
+      return await rawGeminiRequest(currentModel, parts, options);
+    } catch (err) {
+      lastError = err;
+      // Nếu lỗi 503 (quá tải) hoặc 404 (không tìm thấy model), thử model tiếp theo
+      if (err.status === 503 || err.status === 404) {
+        if (i < modelsToTry.length - 1) {
+          console.warn(`Model ${currentModel} gặp lỗi ${err.status}, đang thử fallback...`);
+          el.status.textContent = `Đang thử model dự phòng...`;
+          continue;
+        }
+      }
+      break; // Nếu lỗi khác (401, 403, 400...) thì dừng luôn
+    }
+  }
+  
+  // Xử lý thông báo lỗi cuối cùng
+  if (lastError.status === 503) {
+    throw new Error("Hệ thống Gemini đang quá tải (503). Vui lòng đợi vài giây và thử lại, hoặc đổi Model trong phần Cài đặt.");
+  }
+  if (lastError.status === 400) throw new Error("Yêu cầu không hợp lệ: " + lastError.message);
+  if (lastError.status === 401 || lastError.status === 403) throw new Error("API Key không hợp lệ hoặc chưa được cấp quyền: " + lastError.message);
+  if (lastError.status === 404) throw new Error("Không tìm thấy model nào khả dụng: " + lastError.message);
+  if (lastError.status === 429) throw new Error("Gemini đang giới hạn tốc độ hoặc đã hết quota.");
+  throw new Error("Lỗi Gemini API: " + lastError.message);
 }
 
 function parseJsonResponse(text) {
@@ -453,13 +509,12 @@ function parseJsonResponse(text) {
 
 function translationPrompt({ mode = "translate", extraContext = "" } = {}) {
   const from = langPrompt(sourceLang()), to = langPrompt(targetLang());
-  return `Bạn là chuyên gia biên dịch Việt–Trung, đồng thời là biên dịch viên kỹ thuật nhà máy. Nhiệm vụ: dịch nội dung từ ${from} sang ${to}.
+  return `Bạn là chuyên gia biên dịch đa ngôn ngữ, đồng thời là biên dịch viên kỹ thuật nhà máy. Nhiệm vụ: dịch nội dung từ ${from} sang ${to}.
 YÊU CẦU CHẤT LƯỢNG:
 - Giữ nguyên ý nghĩa, dữ kiện, con số, mã máy, tên riêng, ký hiệu, đơn vị, thời gian, mã lỗi và thuật ngữ kỹ thuật.
-- Nếu là tiếng Việt sang tiếng Trung: dùng tiếng Trung giản thể tự nhiên, đúng ngữ pháp, ưu tiên thuật ngữ nhà máy, tự động hóa, PLC, servo, robot.
-- Nếu là tiếng Trung sang tiếng Việt: dịch rõ ràng, tự nhiên, đúng ngữ cảnh.
+- Nếu là tiếng Trung: dùng tiếng Trung giản thể tự nhiên, đúng ngữ pháp, ưu tiên thuật ngữ nhà máy.
+- Nếu dịch sang ngôn ngữ khác: dịch rõ ràng, tự nhiên, đúng ngữ cảnh văn hóa bản địa.
 - Giữ bố cục gạch đầu dòng, xuống dòng, tiêu đề. Với câu giao tiếp, chọn sắc thái lịch sự.
-- Pinyin chỉ dành cho bản dịch tiếng Trung.
 ${mode === "polish" ? "Hãy ưu tiên bản dịch trôi chảy, sát ngữ cảnh và chuẩn văn phong hơn." : ""}
 ${extraContext}
 CHỈ trả về JSON hợp lệ theo schema được cung cấp.`;
@@ -485,6 +540,7 @@ async function translateText(mode = "translate", inputOverride = null) {
     showError(e.message || e);
   } finally {
     setBusy(false, "translateSpinner");
+    setStatus(); // Khôi phục status pill
   }
 }
 
@@ -499,7 +555,6 @@ async function translateImage() {
       extraContext: "Đây là ảnh có văn bản. Hãy đọc chữ trong ảnh (OCR) rồi dịch toàn bộ phần chữ nhìn thấy." 
     });
     
-    // Sửa chuẩn REST API: camelCase inlineData, mimeType
     const text = await geminiRequest(
       [
         { text: prompt },
@@ -515,6 +570,7 @@ async function translateImage() {
     showError(e.message || e);
   } finally {
     setBusy(false, "imageSpinner");
+    setStatus();
   }
 }
 
@@ -526,10 +582,9 @@ async function translateDrawing() {
     clearError();
     const base64Data = el.canvas.toDataURL("image/png").split(',')[1];
     const prompt = translationPrompt({ 
-      extraContext: "Đây là ảnh chữ viết tay. Hãy nhận dạng chữ viết tay (có thể là tiếng Việt hoặc tiếng Trung), sau đó dịch sang ngôn ngữ đích." 
+      extraContext: "Đây là ảnh chữ viết tay. Hãy nhận dạng chữ viết tay, sau đó dịch sang ngôn ngữ đích." 
     });
     
-    // Sửa chuẩn REST API: camelCase inlineData, mimeType
     const text = await geminiRequest(
       [
         { text: prompt },
@@ -545,6 +600,7 @@ async function translateDrawing() {
     showError(e.message || e);
   } finally {
     setBusy(false, "drawSpinner");
+    setStatus();
   }
 }
 
@@ -768,6 +824,13 @@ function startSpeechInput() {
 el.mic.addEventListener("click", startSpeechInput);
 
 /* ============================ HỘI THOẠI TRỰC TIẾP ============================ */
+function updateLiveLabels() {
+  const srcName = sourceLang() === "auto" ? "Tự động" : LANG_NAMES[sourceLang()];
+  const tgtName = LANG_NAMES[targetLang()];
+  $("sideABtn").textContent = `🎙 Người A (${srcName})`;
+  $("sideBBtn").textContent = `🎙 Người B (${tgtName})`;
+}
+
 function addBubble(text, side, translation) {
   const empty = el.liveFeed.querySelector(".small");
   if (empty) empty.remove();
@@ -786,7 +849,9 @@ function addBubble(text, side, translation) {
 }
 
 function liveLanguages(side) {
-  return side === "A" ? { from: "Vietnamese", to: "Chinese" } : { from: "Chinese", to: "Vietnamese" };
+  const src = sourceLang() === "auto" ? "Vietnamese" : sourceLang();
+  const tgt = targetLang();
+  return side === "A" ? { from: src, to: tgt } : { from: tgt, to: src };
 }
 
 function supportedRecorderMime() {
@@ -872,7 +937,7 @@ async function beginLiveRecording(side) {
       await processLiveAudio(blob, actualMime, side);
     };
     recorder.start(250);
-    el.liveStatus.textContent = side === "A" ? "Đang nghe tiếng Việt… Chạm lại để dừng." : "正在聆听中文… 再次点击停止。";
+    el.liveStatus.textContent = side === "A" ? "Đang nghe… Chạm lại để dừng." : "Đang nghe… Chạm lại để dừng.";
     updateLiveButtons();
   } catch(e) {
     stopStream(stream);
@@ -918,7 +983,6 @@ async function processLiveAudio(blob, mime, side) {
     const b64 = await blobToBase64(blob);
     const prompt = `Nghe đoạn âm thanh được cung cấp. Người nói dự kiến đang nói ${langPrompt(from)}. Hãy nhận dạng chính xác lời nói, sau đó dịch tự nhiên sang ${langPrompt(to)}. Giữ nguyên số, tên riêng, mã thiết bị và thuật ngữ. Nếu không nghe rõ, ghi [không nghe rõ]. CHỈ trả về JSON hợp lệ theo schema.`;
     
-    // Sửa chuẩn REST API: camelCase inlineData, mimeType
     const raw = await geminiRequest(
       [
         { text: prompt }, 
@@ -930,8 +994,7 @@ async function processLiveAudio(blob, mime, side) {
     const result = parseJsonResponse(raw);
     if (!result.transcript && !result.translation) throw new Error("Không nhận dạng được lời nói.");
     
-    // Nếu schema mới không yêu cầu transcript, ta vẫn đọc từ translation
-    const transcript = result.transcript || result.source_text || "(Không nhận dạng được)";
+    const transcript = result.transcript || "(Không nhận dạng được)";
     const translation = result.translation || "";
     
     addBubble(transcript, side, translation);
@@ -943,6 +1006,7 @@ async function processLiveAudio(blob, mime, side) {
     el.liveStatus.textContent = "Dịch thất bại. Bạn có thể ghi âm lại.";
   } finally {
     state.isBusy = false;
+    setStatus();
   }
 }
 
@@ -957,6 +1021,7 @@ $("liveToggle").addEventListener("click", () => {
   if (show) {
     el.drawPanel.style.display = "none";
     el.imagePanel.style.display = "none";
+    updateLiveLabels();
     el.livePanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
   } else if (state.liveRecorder || state.liveStarting) {
     stopLiveRecording();
@@ -993,8 +1058,8 @@ $("saveSettings").addEventListener("click", () => {
   state.apiKey = key;
   state.model = model;
   try {
-    localStorage.setItem("smart_translate_key_v4", key);
-    localStorage.setItem("smart_translate_model_v4", model);
+    localStorage.setItem("smart_translate_key_v5", key);
+    localStorage.setItem("smart_translate_model_v5", model);
   } catch(e) {
     showError("Không thể lưu cài đặt trên trình duyệt: " + e.message);
     return;
@@ -1027,10 +1092,12 @@ $("swapBtn").addEventListener("click", () => {
 $("sourceLang").addEventListener("change", () => {
   if (sourceLang() === targetLang()) showError("Ngôn ngữ nguồn và đích đang giống nhau.");
   else clearError();
+  updateLiveLabels();
 });
 $("targetLang").addEventListener("change", () => {
   if (sourceLang() === targetLang()) showError("Ngôn ngữ nguồn và đích đang giống nhau.");
   else clearError();
+  updateLiveLabels();
 });
 
 $("translateBtn").addEventListener("click", () => translateText("translate"));
@@ -1100,6 +1167,7 @@ window.addEventListener("pagehide", () => {
 /* ============================ KHỞI TẠO ============================ */
 setStatus();
 updateCount();
+updateLiveLabels();
 if ("speechSynthesis" in window) speechSynthesis.getVoices();
 if (window.ResizeObserver) {
   new ResizeObserver(() => {
