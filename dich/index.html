@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>AI Dịch Thông Minh</title>
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-hover: #1557b0;
+      --primary-light: #e8f0fe;
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --border: #dadce0;
+      --text: #202124;
+      --text-secondary: #5f6368;
+      --danger: #d93025;
+      --success: #188038;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(60,64,67,0.15), 0 1px 2px rgba(60,64,67,0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Header */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 600; color: var(--text); }
+    .brand-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--primary); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 16px;
+    }
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .btn-icon {
+      background: transparent; border: 1px solid var(--border); border-radius: 20px;
+      padding: 6px 12px; font-size: 13px; font-weight: 500; color: var(--text);
+      cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.15s;
+    }
+    .btn-icon:hover { background: #f1f3f4; }
+    .key-status { width: 8px; height: 8px; border-radius: 50%; background: var(--danger); }
+    .key-status.active { background: var(--success); }
+
+    /* Main container */
+    main { max-width: 1120px; width: 100%; margin: 16px auto; padding: 0 16px; flex: 1; }
+
+    /* Mode Tabs */
+    .mode-tabs {
+      display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px;
+      scrollbar-width: none;
+    }
+    .mode-tabs::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--primary); padding: 8px 14px; border-radius: 8px;
+      font-size: 14px; font-weight: 500; cursor: pointer;
+      display: flex; align-items: center; gap: 6px; white-space: nowrap; transition: 0.15s;
+    }
+    .tab-btn:hover { background: var(--primary-light); }
+    .tab-btn.active { background: var(--primary-light); border-color: var(--primary); font-weight: 600; }
+
+    /* Translator Card */
+    .translator-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    /* Language Bar */
+    .lang-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding: 8px 12px; background: #fff;
+    }
+    .lang-select-wrap { flex: 1; display: flex; align-items: center; }
+    .lang-select-wrap.right { justify-content: flex-end; }
+    select.lang-select {
+      border: none; background: transparent; font-size: 15px; font-weight: 600;
+      color: var(--primary); padding: 6px 8px; border-radius: 6px; cursor: pointer;
+      outline: none; max-width: 100%;
+    }
+    select.lang-select:hover { background: var(--primary-light); }
+    .swap-btn {
+      background: transparent; border: none; width: 36px; height: 36px;
+      border-radius: 50%; cursor: pointer; color: var(--text-secondary);
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
+      transition: 0.15s;
+    }
+    .swap-btn:hover { background: #f1f3f4; color: var(--text); }
+
+    /* Split Panels */
+    .panels { display: grid; grid-template-columns: 1fr 1fr; min-height: 340px; }
+    @media (max-width: 768px) {
+      .panels { grid-template-columns: 1fr; }
+      .panel-source { border-right: none !important; border-bottom: 1px solid var(--border); }
+    }
+
+    .panel-source {
+      padding: 16px; border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; justify-content: space-between;
+      position: relative;
+    }
+    .panel-target {
+      padding: 16px; background: #fbfcfd;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+
+    /* Text Mode */
+    textarea#sourceText {
+      width: 100%; flex: 1; min-height: 190px; border: none; resize: none;
+      font-size: 18px; line-height: 1.5; color: var(--text); outline: none;
+      background: transparent;
+    }
+    .source-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 12px; padding-top: 8px; border-top: 1px solid #f1f3f4;
+    }
+    .char-count { font-size: 12px; color: var(--text-secondary); }
+    .action-group { display: flex; gap: 8px; align-items: center; }
+
+    .btn-primary {
+      background: var(--primary); color: #fff; border: none;
+      padding: 9px 18px; border-radius: 8px; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: 0.15s; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-primary:disabled { background: #9aa0a6; cursor: not-allowed; }
+    .btn-secondary {
+      background: #f1f3f4; color: var(--text); border: none;
+      padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: 0.15s;
+    }
+    .btn-secondary:hover { background: #e8eaed; }
+
+    /* Draw Mode */
+    .draw-box { display: none; flex-direction: column; gap: 10px; flex: 1; }
+    .canvas-wrapper {
+      border: 1.5px dashed var(--border); border-radius: 8px;
+      background: #fff; position: relative; overflow: hidden;
+      touch-action: none; height: 230px;
+    }
+    canvas#drawCanvas { width: 100%; height: 100%; display: block; cursor: crosshair; }
+    .draw-toolbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; }
+
+    /* Image Mode */
+    .image-box { display: none; flex-direction: column; gap: 12px; flex: 1; }
+    .drop-zone {
+      border: 2px dashed var(--border); border-radius: 10px;
+      padding: 20px; text-align: center; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 200px; background: #fafafa; transition: 0.15s;
+    }
+    .drop-zone:hover { border-color: var(--primary); background: var(--primary-light); }
+    .preview-img { max-width: 100%; max-height: 220px; border-radius: 8px; display: none; object-fit: contain; }
+    .img-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* Voice Mode */
+    .voice-box {
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 230px; gap: 14px; text-align: center;
+    }
+    .mic-circle {
+      width: 72px; height: 72px; border-radius: 50%; border: none;
+      background: var(--primary); color: #fff; font-size: 28px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(26,115,232,0.3); transition: 0.2s;
+    }
+    .mic-circle.recording {
+      background: var(--danger);
+      animation: pulse 1.2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(217, 48, 37, 0.5); }
+      70% { box-shadow: 0 0 0 18px rgba(217, 48, 37, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(217, 48, 37, 0); }
+    }
+
+    /* Live Conversation Mode */
+    .live-container { display: none; padding: 16px; }
+    .live-controls {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;
+    }
+    .live-speaker-btn {
+      padding: 14px; border-radius: 10px; border: 1.5px solid var(--border);
+      background: #fff; cursor: pointer; display: flex; flex-direction: column;
+      align-items: center; gap: 6px; transition: 0.15s;
+    }
+    .live-speaker-btn:hover { border-color: var(--primary); background: var(--primary-light); }
+    .live-speaker-btn.active { border-color: var(--danger); background: #fce8e6; color: var(--danger); }
+    .live-feed {
+      max-height: 360px; overflow-y: auto; display: flex; flex-direction: column;
+      gap: 10px; padding: 8px; background: #f8f9fa; border-radius: 10px;
+      border: 1px solid var(--border); min-height: 220px;
+    }
+    .chat-bubble {
+      max-width: 82%; padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.45;
+    }
+    .chat-left { align-self: flex-start; background: #fff; border: 1px solid var(--border); }
+    .chat-right { align-self: flex-end; background: var(--primary-light); border: 1px solid #c2d7fa; }
+    .chat-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+    /* Output Result Styling */
+    .result-placeholder { color: var(--text-secondary); font-size: 17px; padding-top: 4px; }
+    .result-content { display: none; flex-direction: column; gap: 14px; }
+    .main-translation { font-size: 21px; font-weight: 600; color: var(--text); line-height: 1.4; }
+    .phonetic-box {
+      display: inline-block; background: #e8f0fe; color: #174ea6;
+      padding: 4px 10px; border-radius: 6px; font-size: 14px; font-weight: 500;
+    }
+    .notes-box {
+      background: #fff; border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 12px; font-size: 13.5px; color: var(--text-secondary); line-height: 1.5;
+    }
+    .examples-section h4 {
+      font-size: 13px; text-transform: uppercase; letter-spacing: 0.4px;
+      color: var(--text-secondary); margin-bottom: 8px;
+    }
+    .example-item {
+      background: #fff; border-left: 3px solid var(--primary);
+      padding: 8px 12px; border-radius: 0 8px 8px 0; margin-bottom: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .ex-target { font-size: 14.5px; font-weight: 600; color: var(--text); }
+    .ex-phonetic { font-size: 12.5px; color: #1a73e8; margin: 2px 0; }
+    .ex-vi { font-size: 13px; color: var(--text-secondary); }
+
+    .target-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 14px; padding-top: 10px; border-top: 1px solid #e8eaed;
+    }
+
+    /* Loader & Alert */
+    .spinner {
+      width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.4);
+      border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-banner {
+      display: none; background: #fce8e6; color: var(--danger);
+      padding: 10px 14px; border-radius: 8px; font-size: 13.5px;
+      margin-bottom: 12px; border: 1px solid #f6aea9;
+    }
+
+    /* Modal Settings */
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+      z-index: 100; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal {
+      background: #fff; border-radius: 14px; max-width: 460px; width: 100%;
+      padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    .modal h3 { margin-bottom: 8px; font-size: 18px; }
+    .modal p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 14px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: 8px; font-size: 14px; outline: none;
+    }
+    .form-group input:focus { border-color: var(--primary); }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-icon">AI</div>
+    <span>Dịch Thông Minh</span>
+  </div>
+  <div class="header-actions">
+    <button class="btn-icon" id="openSettingsBtn" title="Cấu hình Gemini API Key">
+      <span class="key-status" id="keyStatusDot"></span>
+      <span>API Key</span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="error-banner" id="errorBanner"></div>
+
+  <!-- Thanh chọn chế độ -->
+  <div class="mode-tabs">
+    <button class="tab-btn active" data-mode="text">📝 Văn bản</button>
+    <button class="tab-btn" data-mode="draw">✍️ Nét vẽ</button>
+    <button class="tab-btn" data-mode="image">📷 Hình ảnh</button>
+    <button class="tab-btn" data-mode="voice">🎙️ Giọng nói</button>
+    <button class="tab-btn" data-mode="live">💬 Hội thoại trực tiếp</button>
+  </div>
+
+  <div class="translator-card">
+    <!-- Thanh chọn ngôn ngữ -->
+    <div class="lang-bar">
+      <div class="lang-select-wrap">
+        <select id="sourceLang" class="lang-select">
+          <option value="auto">Tự động phát hiện</option>
+          <option value="Tiếng Việt">Tiếng Việt</option>
+          <option value="Tiếng Anh">Tiếng Anh</option>
+          <option value="Tiếng Trung (Giản thể)">Tiếng Trung (Giản thể)</option>
+          <option value="Tiếng Trung (Phồn thể)">Tiếng Trung (Phồn thể)</option>
+          <option value="Tiếng Nhật">Tiếng Nhật</option>
+          <option value="Tiếng Hàn">Tiếng Hàn</option>
+          <option value="Tiếng Pháp">Tiếng Pháp</option>
+          <option value="Tiếng Đức">Tiếng Đức</option>
+          <option value="Tiếng Tây Ban Nha">Tiếng Tây Ban Nha</option>
+          <option value="Tiếng Thái">Tiếng Thái</option>
+        </select>
+      </div>
+
+      <button class="swap-btn" id="swapLangBtn" title="Đảo chiều ngôn ngữ">⇄</button>
+
+      <div class="lang-select-wrap right">
+        <select id="targetLang" class="lang-select">
+          <option value="Tiếng Trung (Giản thể)">Tiếng Trung (Giản thể)</option>
+          <option value="Tiếng Anh">Tiếng Anh</option>
+          <option value="Tiếng Việt">Tiếng Việt</option>
+          <option value="Tiếng Trung (Phồn thể)">Tiếng Trung (Phồn thể)</option>
+          <option value="Tiếng Nhật">Tiếng Nhật</option>
+          <option value="Tiếng Hàn">Tiếng Hàn</option>
+          <option value="Tiếng Pháp">Tiếng Pháp</option>
+          <option value="Tiếng Đức">Tiếng Đức</option>
+          <option value="Tiếng Tây Ban Nha">Tiếng Tây Ban Nha</option>
+          <option value="Tiếng Thái">Tiếng Thái</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Giao diện 2 cột chuẩn (Văn bản / Nét vẽ / Ảnh / Giọng nói) -->
+    <div class="panels" id="standardPanels">
+      <!-- Cột nguồn -->
+      <div class="panel-source">
+        <!-- 1. Text Mode -->
+        <div id="mode-text" style="display:flex; flex-direction:column; flex:1;">
+          <textarea id="sourceText" placeholder="Nhập văn bản hoặc từ vựng cần dịch..."></textarea>
+          <div class="source-footer">
+            <span class="char-count" id="charCount">0 / 3000</span>
+            <div class="action-group">
+              <button class="btn-secondary" id="clearTextBtn">Xóa</button>
+              <button class="btn-primary" id="translateTextBtn">
+                <span>Dịch</span>
+                <div class="spinner" id="textSpinner"></div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Draw Mode -->
+        <div class="draw-box" id="mode-draw">
+          <div class="canvas-wrapper">
+            <canvas id="drawCanvas"></canvas>
+          </div>
+          <div class="draw-toolbar">
+            <div class="action-group">
+              <button class="btn-secondary" id="undoDrawBtn">↩ Hoàn tác</button>
+              <button class="btn-secondary" id="clearDrawBtn">🗑 Xóa bảng</button>
+              <select id="brushSize" class="btn-secondary" title="Độ dày nét">
+                <option value="3">Nét mảnh</option>
+                <option value="5" selected>Nét vừa</option>
+                <option value="9">Nét đậm</option>
+              </select>
+            </div>
+            <button class="btn-primary" id="translateDrawBtn">
+              <span>Nhận diện & Dịch</span>
+              <div class="spinner" id="drawSpinner"></div>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Image Mode -->
+        <div class="image-box" id="mode-image">
+          <div class="drop-zone" id="dropZone">
+            <p id="dropHint" style="color:var(--text-secondary); font-size:14px;">
+              Bấm để chọn ảnh hoặc kéo thả hình ảnh vào đây
+            </p>
+            <img id="imagePreview" class="preview-img" alt="Xem trước ảnh" />
+          </div>
+          <input type="file" id="fileInput" accept="image/*" hidden />
+          <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden />
+          <div class="img-buttons">
+            <button class="btn-secondary" id="pickFileBtn">📁 Chọn ảnh</button>
+            <button class="btn-secondary" id="openCamBtn">📸 Chụp máy ảnh</button>
+            <button class="btn-primary" id="translateImgBtn" style="margin-left:auto;" disabled>
+              <span>Dịch ảnh</span>
+              <div class="spinner" id="imgSpinner"></div>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. Voice Mode -->
+        <div class="voice-box" id="mode-voice">
+          <button class="mic-circle" id="voiceRecordBtn" title="Bấm để nói">🎙️</button>
+          <div id="voiceStatus" style="font-size:14px; color:var(--text-secondary);">
+            Bấm vào micro để bắt đầu ghi âm câu nói
+          </div>
+          <div id="voiceTranscriptPreview" style="font-size:15px; font-weight:500; color:var(--text);"></div>
+        </div>
+      </div>
+
+      <!-- Cột đích -->
+      <div class="panel-target">
+        <div class="result-placeholder" id="resultPlaceholder">Bản dịch, phiên âm và 3 ví dụ sẽ hiển thị ở đây...</div>
+
+        <div class="result-content" id="resultContent">
+          <div>
+            <div class="main-translation" id="resTranslation"></div>
+            <div style="margin-top:6px;" id="resPhoneticWrap">
+              <span class="phonetic-box" id="resPhonetic"></span>
+            </div>
+          </div>
+
+          <div class="notes-box" id="resNotes"></div>
+
+          <div class="examples-section" id="resExamplesWrap">
+            <h4>3 Ví dụ cách dùng trong câu</h4>
+            <div id="resExamplesList"></div>
+          </div>
+        </div>
+
+        <div class="target-toolbar" id="targetToolbar" style="display:none;">
+          <div class="action-group">
+            <button class="btn-secondary" id="speakResultBtn">🔊 Nghe phát âm</button>
+            <button class="btn-secondary" id="copyResultBtn">📋 Sao chép</button>
+          </div>
+          <span style="font-size:12px; color:var(--text-secondary);" id="detectedLangTag"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Giao diện Hội thoại trực tiếp (Live Conversation) -->
+    <div class="live-container" id="liveContainer">
+      <div class="live-controls">
+        <button class="live-speaker-btn" id="speakLeftBtn">
+          <strong id="leftSpeakerLabel">Người A (Tiếng Việt)</strong>
+          <span style="font-size:12px; color:var(--text-secondary);">Bấm để nói / Dừng</span>
+        </button>
+        <button class="live-speaker-btn" id="speakRightBtn">
+          <strong id="rightSpeakerLabel">Người B (Tiếng Trung)</strong>
+          <span style="font-size:12px; color:var(--text-secondary);">Bấm để nói / Dừng</span>
+        </button>
+      </div>
+      <div class="live-feed" id="liveFeed">
+        <div style="text-align:center; color:var(--text-secondary); font-size:13px; margin:auto;">
+          Chọn ngôn ngữ nguồn & đích ở thanh trên, sau đó bấm nút tương ứng với người đang nói.
+        </div>
+      </div>
+      <div style="margin-top:10px; display:flex; justify-content:flex-end;">
+        <button class="btn-secondary" id="clearLiveBtn">Xóa lịch sử hội thoại</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Modal Cấu hình API Key -->
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal">
+    <h3>Cấu hình Gemini API Key</h3>
+    <p>
+      Key được lưu trực tiếp trên trình duyệt của bạn (<code>localStorage</code>), không gửi đi bất kỳ máy chủ trung gian nào.
+      Lấy key miễn phí tại <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>.
+    </p>
+    <div class="form-group">
+      <label for="apiKeyInput">Gemini API Key</label>
+      <input type="password" id="apiKeyInput" placeholder="AIzaSy..." autocomplete="off" />
+    </div>
+    <div class="form-group">
+      <label for="modelSelect">Mô hình Gemini</label>
+      <select id="modelSelect">
+        <option value="gemini-2.5-flash">gemini-2.5-flash (Nhanh, hỗ trợ đầy đủ đa phương thức)</option>
+        <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite (Tiết kiệm quota tối đa)</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="closeSettingsBtn">Đóng</button>
+      <button class="btn-primary" id="saveSettingsBtn">Lưu cấu hình</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // --- STATE & STORAGE ---
+  const STORAGE_KEY = 'gemini_smart_translate_key';
+  const STORAGE_MODEL = 'gemini_smart_translate_model';
+  let currentMode = 'text';
+  let currentImageBase64 = null;
+  let currentImageMime = null;
+  let lastTranslationText = '';
+
+  // --- DOM ELEMENTS ---
+  const el = (id) => document.getElementById(id);
+  const errorBanner = el('errorBanner');
+  const keyStatusDot = el('keyStatusDot');
+  const sourceLang = el('sourceLang');
+  const targetLang = el('targetLang');
+
+  // --- INIT ---
+  function updateKeyIndicator() {
+    const k = localStorage.getItem(STORAGE_KEY);
+    if (k && k.trim().length > 10) {
+      keyStatusDot.classList.add('active');
+    } else {
+      keyStatusDot.classList.remove('active');
+    }
+  }
+  updateKeyIndicator();
+  updateLiveLabels();
+
+  function showError(msg) {
+    errorBanner.textContent = msg;
+    errorBanner.style.display = 'block';
+    setTimeout(() => { errorBanner.style.display = 'none'; }, 7000);
+  }
+
+  function clearError() {
+    errorBanner.style.display = 'none';
+  }
+
+  // --- SETTINGS MODAL ---
+  el('openSettingsBtn').onclick = () => {
+    el('apiKeyInput').value = localStorage.getItem(STORAGE_KEY) || '';
+    el('modelSelect').value = localStorage.getItem(STORAGE_MODEL) || 'gemini-2.5-flash';
+    el('settingsModal').style.display = 'flex';
+  };
+  el('closeSettingsBtn').onclick = () => { el('settingsModal').style.display = 'none'; };
+  el('saveSettingsBtn').onclick = () => {
+    const keyVal = el('apiKeyInput').value.trim();
+    const modelVal = el('modelSelect').value;
+    if (!keyVal) {
+      alert('Vui lòng nhập Gemini API Key.');
+      return;
+    }
+    localStorage.setItem(STORAGE_KEY, keyVal);
+    localStorage.setItem(STORAGE_MODEL, modelVal);
+    updateKeyIndicator();
+    el('settingsModal').style.display = 'none';
+    clearError();
+  };
+
+  // --- MODE SWITCHING ---
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentMode = btn.dataset.mode;
+      clearError();
+
+      if (currentMode === 'live') {
+        el('standardPanels').style.display = 'none';
+        el('liveContainer').style.display = 'block';
+        updateLiveLabels();
+      } else {
+        el('standardPanels').style.display = 'grid';
+        el('liveContainer').style.display = 'none';
+        el('mode-text').style.display = currentMode === 'text' ? 'flex' : 'none';
+        el('mode-draw').style.display = currentMode === 'draw' ? 'flex' : 'none';
+        el('mode-image').style.display = currentMode === 'image' ? 'flex' : 'none';
+        el('mode-voice').style.display = currentMode === 'voice' ? 'flex' : 'none';
+        if (currentMode === 'draw') resizeCanvas();
+      }
+    };
+  });
+
+  // --- LANGUAGE SWAP ---
+  el('swapLangBtn').onclick = () => {
+    if (sourceLang.value === 'auto') {
+      sourceLang.value = targetLang.value;
+      targetLang.value = 'Tiếng Việt';
+    } else {
+      const tmp = sourceLang.value;
+      sourceLang.value = targetLang.value;
+      targetLang.value = tmp;
+    }
+    updateLiveLabels();
+  };
+
+  sourceLang.onchange = updateLiveLabels;
+  targetLang.onchange = updateLiveLabels;
+
+  function updateLiveLabels() {
+    const s = sourceLang.value === 'auto' ? 'Tiếng Việt' : sourceLang.value;
+    const t = targetLang.value;
+    el('leftSpeakerLabel').textContent = `Người A (${s})`;
+    el('rightSpeakerLabel').textContent = `Người B (${t})`;
+  }
+
+  // --- GEMINI API CORE CALL ---
+  async function callGemini({ promptText, inlineData = null }) {
+    const apiKey = localStorage.getItem(STORAGE_KEY);
+    if (!apiKey) {
+      el('openSettingsBtn').click();
+      throw new Error('Bạn chưa nhập Gemini API Key. Vui lòng dán key vào phần cài đặt.');
+    }
+    const model = localStorage.getItem(STORAGE_MODEL) || 'gemini-2.5-flash';
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+    const parts = [{ text: promptText }];
+    if (inlineData) {
+      parts.push({ inline_data: inlineData });
+    }
+
+    const body = {
+      contents: [{ role: 'user', parts }],
+      generationConfig: {
+        temperature: 0.2,
+        responseMimeType: 'application/json'
+      }
+    };
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      const errMsg = data?.error?.message || `Lỗi API (${res.status})`;
+      if (res.status === 429) {
+        throw new Error('Đã chạm giới hạn gói Free (429 Too Many Requests). Vui lòng đợi khoảng 30–60 giây rồi thử lại.');
+      }
+      throw new Error(errMsg);
+    }
+
+    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!rawText) throw new Error('AI không trả về dữ liệu hợp lệ.');
+
+    try {
+      return JSON.parse(rawText);
+    } catch {
+      const cleaned = rawText.replace(/```json|```/g, '').trim();
+      return JSON.parse(cleaned);
+    }
+  }
+
+  function buildTranslationPrompt(srcLang, tgtLang, taskDescription) {
+    return `Bạn là chuyên gia ngôn ngữ và từ điển song ngữ chính xác.
+Nhiệm vụ: ${taskDescription}
+Ngôn ngữ nguồn: ${srcLang === 'auto' ? 'Tự động nhận diện từ nội dung đầu vào' : srcLang}.
+Ngôn ngữ đích: ${tgtLang}.
+
+Yêu cầu bắt buộc trả về đúng định dạng JSON với cấu trúc sau (không thêm markdown thừa):
+{
+  "detected_source_lang": "Tên ngôn ngữ nguồn đã nhận diện",
+  "recognized_source_text": "Nội dung gốc đã nhận diện được",
+  "translation": "Bản dịch chuẩn xác sang ${tgtLang}",
+  "phonetic": "Phiên âm cách đọc của bản dịch ở ngôn ngữ đích (BẮT BUỘC có Pinyin có dấu nếu đích là tiếng Trung, Romaji/Furigana nếu đích là tiếng Nhật, phiên âm quốc tế IPA nếu đích là tiếng Anh/Pháp/..., hoặc để trống nếu ngôn ngữ đích là tiếng Việt)",
+  "notes": "Chú thích ngắn gọn về từ loại, sắc thái sử dụng, ngữ cảnh lịch sự/thân mật hoặc lưu ý ngữ pháp quan trọng (bằng tiếng Việt)",
+  "examples": [
+    {
+      "sentence": "Câu ví dụ 1 sử dụng từ/cụm từ đã dịch bằng ${tgtLang}",
+      "phonetic": "Phiên âm của câu ví dụ 1 (Pinyin/Romaji/IPA...)",
+      "meaning_vi": "Dịch nghĩa tiếng Việt của câu ví dụ 1"
+    },
+    {
+      "sentence": "Câu ví dụ 2 bằng ${tgtLang}",
+      "phonetic": "Phiên âm câu ví dụ 2",
+      "meaning_vi": "Dịch nghĩa tiếng Việt câu ví dụ 2"
+    },
+    {
+      "sentence": "Câu ví dụ 3 bằng ${tgtLang}",
+      "phonetic": "Phiên âm câu ví dụ 3",
+      "meaning_vi": "Dịch nghĩa tiếng Việt câu ví dụ 3"
+    }
+  ]
+}`;
+  }
+
+  function renderResult(data) {
+    el('resultPlaceholder').style.display = 'none';
+    el('resultContent').style.display = 'flex';
+    el('targetToolbar').style.display = 'flex';
+
+    lastTranslationText = data.translation || '';
+    el('resTranslation').textContent = lastTranslationText;
+
+    if (data.phonetic && data.phonetic.trim()) {
+      el('resPhoneticWrap').style.display = 'block';
+      el('resPhonetic').textContent = data.phonetic;
+    } else {
+      el('resPhoneticWrap').style.display = 'none';
+    }
+
+    el('resNotes').innerHTML = `<strong>💡 Chú thích:</strong> ${escapeHtml(data.notes || 'Không có ghi chú thêm.')}`;
+    el('detectedLangTag').textContent = data.detected_source_lang ? `Nguồn: ${data.detected_source_lang}` : '';
+
+    const list = el('resExamplesList');
+    list.innerHTML = '';
+    const examples = Array.isArray(data.examples) ? data.examples.slice(0, 3) : [];
+    examples.forEach((ex, idx) => {
+      const div = document.createElement('div');
+      div.className = 'example-item';
+      div.innerHTML = `
+        <div class="ex-target">${idx + 1}. ${escapeHtml(ex.sentence || '')}</div>
+        ${ex.phonetic ? `<div class="ex-phonetic">${escapeHtml(ex.phonetic)}</div>` : ''}
+        <div class="ex-vi">${escapeHtml(ex.meaning_vi || '')}</div>
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, m => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[m]));
+  }
+
+  // --- 1. TEXT TRANSLATION ---
+  const sourceText = el('sourceText');
+  sourceText.oninput = () => {
+    el('charCount').textContent = `${sourceText.value.length} / 3000`;
+  };
+  el('clearTextBtn').onclick = () => {
+    sourceText.value = '';
+    el('charCount').textContent = '0 / 3000';
+  };
+
+  el('translateTextBtn').onclick = async () => {
+    const text = sourceText.value.trim();
+    if (!text) return;
+    clearError();
+    setLoading('translateTextBtn', 'textSpinner', true);
+    try {
+      const prompt = buildTranslationPrompt(
+        sourceLang.value,
+        targetLang.value,
+        `Dịch văn bản sau: "${text}"`
+      );
+      const res = await callGemini({ promptText: prompt });
+      renderResult(res);
+    } catch (e) {
+      showError(e.message);
+    } finally {
+      setLoading('translateTextBtn', 'textSpinner', false);
+    }
+  };
+
+  // --- 2. DRAW CANVAS ---
+  const canvas = el('drawCanvas');
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
+  let strokes = [];
+  let currentStroke = [];
+
+  function resizeCanvas() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    if (rect.width === 0) return;
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    redrawCanvas();
+  }
+  window.addEventListener('resize', () => { if (currentMode === 'draw') resizeCanvas(); });
+
+  function redrawCanvas() {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#111111';
+
+    strokes.forEach(s => {
+      if (s.points.length < 1) return;
+      ctx.lineWidth = s.size;
+      ctx.beginPath();
+      ctx.moveTo(s.points[0].x, s.points[0].y);
+      for (let i = 1; i < s.points.length; i++) {
+        ctx.lineTo(s.points[i].x, s.points[i].y);
+      }
+      ctx.stroke();
+    });
+  }
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: clientX - rect.left, y: clientY - rect.top };
+  }
+
+  function startDraw(e) {
+    e.preventDefault();
+    drawing = true;
+    currentStroke = { size: Number(el('brushSize').value), points: [getPos(e)] };
+    strokes.push(currentStroke);
+    redrawCanvas();
+  }
+  function moveDraw(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    currentStroke.points.push(getPos(e));
+    redrawCanvas();
+  }
+  function endDraw() { drawing = false; }
+
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', moveDraw);
+  window.addEventListener('mouseup', endDraw);
+  canvas.addEventListener('touchstart', startDraw, { passive: false });
+  canvas.addEventListener('touchmove', moveDraw, { passive: false });
+  canvas.addEventListener('touchend', endDraw);
+
+  el('undoDrawBtn').onclick = () => { strokes.pop(); redrawCanvas(); };
+  el('clearDrawBtn').onclick = () => { strokes = []; redrawCanvas(); };
+
+  el('translateDrawBtn').onclick = async () => {
+    if (strokes.length === 0) {
+      showError('Bạn chưa vẽ chữ hoặc ký hiệu nào lên bảng.');
+      return;
+    }
+    clearError();
+    setLoading('translateDrawBtn', 'drawSpinner', true);
+    try {
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      const base64 = dataUrl.split(',')[1];
+      const prompt = buildTranslationPrompt(
+        sourceLang.value,
+        targetLang.value,
+        'Nhận diện chữ viết tay, ký tự (ví dụ chữ Hán, Kanji, Hangul, chữ cái...) hoặc hình vẽ trong ảnh này, sau đó dịch chính xác sang ngôn ngữ đích.'
+      );
+      const res = await callGemini({
+        promptText: prompt,
+        inlineData: { mime_type: 'image/jpeg', data: base64 }
+      });
+      renderResult(res);
+    } catch (e) {
+      showError(e.message);
+    } finally {
+      setLoading('translateDrawBtn', 'drawSpinner', false);
+    }
+  };
+
+  // --- 3. IMAGE / CAMERA TRANSLATION ---
+  const dropZone = el('dropZone');
+  const fileInput = el('fileInput');
+  const cameraInput = el('cameraInput');
+  const imagePreview = el('imagePreview');
+
+  el('pickFileBtn').onclick = () => fileInput.click();
+  el('openCamBtn').onclick = () => cameraInput.click();
+  dropZone.onclick = () => fileInput.click();
+
+  dropZone.ondragover = (e) => { e.preventDefault(); dropZone.style.borderColor = 'var(--primary)'; };
+  dropZone.ondragleave = () => { dropZone.style.borderColor = 'var(--border)'; };
+  dropZone.ondrop = (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = 'var(--border)';
+    if (e.dataTransfer.files[0]) processImageFile(e.dataTransfer.files[0]);
+  };
+
+  fileInput.onchange = (e) => { if (e.target.files[0]) processImageFile(e.target.files[0]); };
+  cameraInput.onchange = (e) => { if (e.target.files[0]) processImageFile(e.target.files[0]); };
+
+  function processImageFile(file) {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        // Resize ảnh tối đa 1280px để tiết kiệm token & tăng tốc
+        const maxDim = 1280;
+        let w = img.width, h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+          else { w = Math.round(w * maxDim / h); h = maxDim; }
+        }
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = w; tempCanvas.height = h;
+        tempCanvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const compressedUrl = tempCanvas.toDataURL('image/jpeg', 0.85);
+
+        currentImageBase64 = compressedUrl.split(',')[1];
+        currentImageMime = 'image/jpeg';
+        imagePreview.src = compressedUrl;
+        imagePreview.style.display = 'block';
+        el('dropHint').style.display = 'none';
+        el('translateImgBtn').disabled = false;
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  el('translateImgBtn').onclick = async () => {
+    if (!currentImageBase64) return;
+    clearError();
+    setLoading('translateImgBtn', 'imgSpinner', true);
+    try {
+      const prompt = buildTranslationPrompt(
+        sourceLang.value,
+        targetLang.value,
+        'Đọc toàn bộ văn bản (hoặc nhận diện vật thể chính nếu ảnh không có chữ) trong hình ảnh và dịch tự nhiên sang ngôn ngữ đích.'
+      );
+      const res = await callGemini({
+        promptText: prompt,
+        inlineData: { mime_type: currentImageMime, data: currentImageBase64 }
+      });
+      renderResult(res);
+    } catch (e) {
+      showError(e.message);
+    } finally {
+      setLoading('translateImgBtn', 'imgSpinner', false);
+    }
+  };
+
+  // --- 4. VOICE TRANSLATION (MediaRecorder -> Gemini Multimodal Audio) ---
+  let mediaRecorder = null;
+  let audioChunks = [];
+  let isRecordingVoice = false;
+
+  el('voiceRecordBtn').onclick = async () => {
+    if (isRecordingVoice) {
+      mediaRecorder.stop();
+      return;
+    }
+    clearError();
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioChunks = [];
+      mediaRecorder = new MediaRecorder(stream);
+
+      mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) audioChunks.push(e.data); };
+      mediaRecorder.onstop = async () => {
+        isRecordingVoice = false;
+        el('voiceRecordBtn').classList.remove('recording');
+        el('voiceStatus').textContent = 'Đang xử lý giọng nói & dịch...';
+        stream.getTracks().forEach(t => t.stop());
+
+        const blob = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+        const base64Audio = await blobToBase64(blob);
+        try {
+          const prompt = buildTranslationPrompt(
+            sourceLang.value,
+            targetLang.value,
+            'Nghe đoạn ghi âm giọng nói này, chép lại nội dung đã nói và dịch chính xác sang ngôn ngữ đích.'
+          );
+          const res = await callGemini({
+            promptText: prompt,
+            inlineData: { mime_type: blob.type || 'audio/webm', data: base64Audio }
+          });
+          el('voiceTranscriptPreview').textContent = `Bạn đã nói: "${res.recognized_source_text || ''}"`;
+          el('voiceStatus').textContent = 'Bấm vào micro để ghi âm lượt mới';
+          renderResult(res);
+          speakText(res.translation, targetLang.value);
+        } catch (err) {
+          el('voiceStatus').textContent = 'Bấm vào micro để thử lại';
+          showError(err.message);
+        }
+      };
+
+      mediaRecorder.start();
+      isRecordingVoice = true;
+      el('voiceRecordBtn').classList.add('recording');
+      el('voiceStatus').textContent = 'Đang nghe... Bấm lần nữa để dừng và dịch';
+      el('voiceTranscriptPreview').textContent = '';
+    } catch (e) {
+      showError('Không thể truy cập micro. Hãy cấp quyền micro cho trình duyệt.');
+    }
+  };
+
+  // --- 5. LIVE CONVERSATION (2-WAY) ---
+  let liveRecorder = null;
+  let liveChunks = [];
+  let activeLiveSide = null; // 'left' | 'right'
+
+  el('speakLeftBtn').onclick = () => toggleLiveRecording('left');
+  el('speakRightBtn').onclick = () => toggleLiveRecording('right');
+  el('clearLiveBtn').onclick = () => { el('liveFeed').innerHTML = ''; };
+
+  async function toggleLiveRecording(side) {
+    if (activeLiveSide) {
+      if (liveRecorder && liveRecorder.state === 'recording') liveRecorder.stop();
+      return;
+    }
+    clearError();
+    const sLang = sourceLang.value === 'auto' ? 'Tiếng Việt' : sourceLang.value;
+    const tLang = targetLang.value;
+    const fromLang = side === 'left' ? sLang : tLang;
+    const toLang = side === 'left' ? tLang : sLang;
+    const btn = side === 'left' ? el('speakLeftBtn') : el('speakRightBtn');
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      liveChunks = [];
+      liveRecorder = new MediaRecorder(stream);
+
+      liveRecorder.ondataavailable = (e) => { if (e.data.size > 0) liveChunks.push(e.data); };
+      liveRecorder.onstop = async () => {
+        activeLiveSide = null;
+        btn.classList.remove('active');
+        stream.getTracks().forEach(t => t.stop());
+
+        const blob = new Blob(liveChunks, { type: liveRecorder.mimeType || 'audio/webm' });
+        const base64Audio = await blobToBase64(blob);
+
+        const placeholderBubble = appendChatBubble(side, 'Đang nghe và dịch...', '');
+        try {
+          const prompt = `Nghe đoạn hội thoại bằng ${fromLang} và dịch tự nhiên sang ${toLang}. Trả về JSON: {"recognized": "câu gốc", "translated": "câu dịch", "phonetic": "phiên âm nếu có"}`;
+          const res = await callGemini({
+            promptText: prompt,
+            inlineData: { mime_type: blob.type || 'audio/webm', data: base64Audio }
+          });
+          placeholderBubble.innerHTML = `
+            <strong>${escapeHtml(res.translated || '')}</strong>
+            ${res.phonetic ? `<div class="ex-phonetic">${escapeHtml(res.phonetic)}</div>` : ''}
+            <div class="chat-sub">${escapeHtml(res.recognized || '')}</div>
+          `;
+          speakText(res.translated, toLang);
+        } catch (err) {
+          placeholderBubble.remove();
+          showError(err.message);
+        }
+      };
+
+      liveRecorder.start();
+      activeLiveSide = side;
+      btn.classList.add('active');
+    } catch {
+      showError('Không thể truy cập micro cho chế độ hội thoại.');
+    }
+  }
+
+  function appendChatBubble(side, mainText, subText) {
+    const feed = el('liveFeed');
+    if (feed.children.length === 1 && feed.children[0].style.textAlign === 'center') {
+      feed.innerHTML = '';
+    }
+    const div = document.createElement('div');
+    div.className = `chat-bubble ${side === 'left' ? 'chat-left' : 'chat-right'}`;
+    div.innerHTML = `<div>${escapeHtml(mainText)}</div>${subText ? `<div class="chat-sub">${escapeHtml(subText)}</div>` : ''}`;
+    feed.appendChild(div);
+    feed.scrollTop = feed.scrollHeight;
+    return div;
+  }
+
+  // --- UTILS: TTS, COPY, HELPERS ---
+  const langCodeMap = {
+    'Tiếng Việt': 'vi-VN',
+    'Tiếng Anh': 'en-US',
+    'Tiếng Trung (Giản thể)': 'zh-CN',
+    'Tiếng Trung (Phồn thể)': 'zh-TW',
+    'Tiếng Nhật': 'ja-JP',
+    'Tiếng Hàn': 'ko-KR',
+    'Tiếng Pháp': 'fr-FR',
+    'Tiếng Đức': 'de-DE',
+    'Tiếng Tây Ban Nha': 'es-ES',
+    'Tiếng Thái': 'th-TH'
+  };
+
+  function speakText(text, langLabel) {
+    if (!text || !('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = langCodeMap[langLabel] || 'en-US';
+    window.speechSynthesis.speak(utter);
+  }
+
+  el('speakResultBtn').onclick = () => speakText(lastTranslationText, targetLang.value);
+  el('copyResultBtn').onclick = async () => {
+    if (!lastTranslationText) return;
+    await navigator.clipboard.writeText(lastTranslationText);
+    const btn = el('copyResultBtn');
+    btn.textContent = '✅ Đã chép';
+    setTimeout(() => { btn.textContent = '📋 Sao chép'; }, 1500);
+  };
+
+  function setLoading(btnId, spinnerId, isLoading) {
+    el(btnId).disabled = isLoading;
+    el(spinnerId).style.display = isLoading ? 'inline-block' : 'none';
+  }
+
+  function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+})();
+</script>
+</body>
+</html>
