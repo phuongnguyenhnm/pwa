@@ -37,7 +37,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:6px;fle
 .iconbtn:hover{background:var(--panel2);border-color:var(--line)}
 .status{
   font-size:10.5px;color:var(--muted);padding:3px 9px;border:1px solid var(--line);
-  border-radius:99px;display:inline-block;margin-top:3px;max-width:250px;
+  border-radius:99px;display:inline-block;margin-top:3px;max-width:270px;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle
 }
 .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--danger)}
@@ -46,6 +46,10 @@ header{display:flex;align-items:center;justify-content:space-between;gap:6px;fle
   display:none;padding:8px 11px;border:1px solid #75464b;background:#3b2025;
   color:#ffc1c1;border-radius:12px;font-size:12px;line-height:1.4;
   overflow-wrap:anywhere;white-space:pre-wrap;max-height:76px;overflow-y:auto;flex-shrink:0
+}
+.notice{
+  display:none;padding:6px 10px;border:1px solid #3c657d;background:#152b38;
+  color:var(--accent2);border-radius:11px;font-size:11.5px;line-height:1.35;flex-shrink:0
 }
 .card{
   background:linear-gradient(160deg,#1c272e,#172027);border:1px solid #ffffff12;
@@ -110,6 +114,13 @@ canvas{display:block;width:100%;height:100%;touch-action:none}
 .extra{display:none;gap:6px;flex-direction:column}
 .extra-item{padding:8px 10px;background:var(--panel2);border-radius:10px;font-size:12px;line-height:1.45;white-space:pre-wrap}
 .extra-item b{color:var(--accent2)}
+.history-bar{display:none;gap:5px;flex-wrap:wrap;padding-top:2px}
+.chip{
+  border:1px solid var(--line);background:var(--panel2);color:var(--muted);
+  border-radius:99px;padding:3px 9px;font-size:11px;max-width:180px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap
+}
+.chip:hover{color:var(--text);border-color:var(--accent)}
 .spinner{
   display:none;width:13px;height:13px;border:2px solid #092b4544;
   border-top-color:#092b45;border-radius:50%;animation:spin .65s linear infinite
@@ -188,6 +199,7 @@ a{color:var(--accent)}
   </div>
 </header>
 
+<div class="notice" id="noticeBox" role="status"></div>
 <div class="error" id="errorBox" role="alert"></div>
 
 <section class="card" id="mainCard">
@@ -262,6 +274,8 @@ a{color:var(--accent)}
       <div class="explain" id="explanation"></div>
       <div class="extra" id="alternatives"></div>
     </div>
+
+    <div class="history-bar" id="historyBar"></div>
   </div>
 
   <!-- Hội thoại trực tiếp -->
@@ -322,17 +336,17 @@ a{color:var(--accent)}
   <div class="field">
     <label for="modelName" id="modelLabel">Gemini Model</label>
     <select id="modelName">
-      <option value="gemini-3.8-flash">gemini-3.8-flash (Mặc định)</option>
-      <option value="gemini-3.7-flash">gemini-3.7-flash</option>
-      <option value="gemini-3.6-flash">gemini-3.6-flash</option>
+      <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (Mặc định)</option>
       <option value="gemini-3.5-flash">gemini-3.5-flash</option>
-      <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite</option>
+      <option value="gemini-3.6-flash">gemini-3.6-flash</option>
+      <option value="gemini-3.7-flash">gemini-3.7-flash</option>
+      <option value="gemini-3.8-flash">gemini-3.8-flash</option>
       <option value="custom" id="customModelOption">Tùy chỉnh tên model...</option>
     </select>
   </div>
   <div class="field" id="customModelField" style="display:none;">
     <label for="customModelInput" id="customModelLabel">Tên model tùy chỉnh</label>
-    <input id="customModelInput" type="text" placeholder="Ví dụ: gemini-3.8-flash" spellcheck="false">
+    <input id="customModelInput" type="text" placeholder="Ví dụ: gemini-3.5-flash-lite" spellcheck="false">
   </div>
   <div class="modalfoot">
     <button class="btn" id="cancelSettings"><span class="btn-label">Đóng</span></button>
@@ -351,15 +365,16 @@ const CONFIG = {
   maxImageBytes: 12 * 1024 * 1024,
   maxImageDimension: 1400,
   maxAudioBytes: 18 * 1024 * 1024,
-  defaultModel: "gemini-3.8-flash"
+  defaultModel: "gemini-3.5-flash-lite",
+  maxHistory: 5
 };
 
 const FALLBACK_MODELS = [
-  "gemini-3.8-flash",
-  "gemini-3.7-flash",
-  "gemini-3.6-flash",
+  "gemini-3.5-flash-lite",
   "gemini-3.5-flash",
-  "gemini-3.5-flash-lite"
+  "gemini-3.6-flash",
+  "gemini-3.7-flash",
+  "gemini-3.8-flash"
 ];
 
 const LANGUAGES = [
@@ -437,7 +452,7 @@ const I18N = {
     micLabel: "Nhập bằng giọng nói",
     errUnknown: "Đã xảy ra lỗi không xác định.",
     errNeedKey: "Bạn cần nhập Gemini API Key trong phần Cài đặt trước khi sử dụng.",
-    errBadModel: "Tên model không hợp lệ. Ví dụ: gemini-3.8-flash",
+    errBadModel: "Tên model không hợp lệ. Ví dụ: gemini-3.5-flash-lite",
     errEmptyText: "Vui lòng nhập nội dung cần dịch.",
     errTooLong: "Nội dung quá dài (tối đa 20.000 ký tự mỗi lượt).",
     errNoImage: "Bạn chưa chọn ảnh.",
@@ -503,7 +518,7 @@ const I18N = {
     micLabel: "Voice input",
     errUnknown: "An unknown error occurred.",
     errNeedKey: "Please enter your Gemini API Key in Settings before using.",
-    errBadModel: "Invalid model name. Example: gemini-3.8-flash",
+    errBadModel: "Invalid model name. Example: gemini-3.5-flash-lite",
     errEmptyText: "Please enter text to translate.",
     errTooLong: "Text is too long (max 20,000 characters per request).",
     errNoImage: "Please choose an image first.",
@@ -569,7 +584,7 @@ const I18N = {
     micLabel: "语音输入",
     errUnknown: "发生未知错误。",
     errNeedKey: "请先在设置中输入 Gemini API Key。",
-    errBadModel: "模型名称无效，例如：gemini-3.8-flash",
+    errBadModel: "模型名称无效，例如：gemini-3.5-flash-lite",
     errEmptyText: "请输入要翻译的内容。",
     errTooLong: "内容过长（每次最多 20,000 字）。",
     errNoImage: "请先选择图片。",
@@ -589,6 +604,7 @@ const state = {
   apiKey: localStorage.getItem("smart_translate_key_v5") || "",
   model: localStorage.getItem("smart_translate_model_v5") || CONFIG.defaultModel,
   lastResult: null,
+  history: [],
   imageData: null,
   isBusy: false,
   liveRecorder: null,
@@ -604,10 +620,12 @@ const state = {
   currentStroke: null,
   canvasDpr: 1,
   canvasWidth: 0,
-  canvasHeight: 0
+  canvasHeight: 0,
+  noticeTimer: null
 };
 
 const el = {
+  notice: $("noticeBox"),
   error: $("errorBox"),
   status: $("statusPill"),
   keyDot: $("keyDot"),
@@ -618,6 +636,7 @@ const el = {
   pinyin: $("pinyinText"),
   explanation: $("explanation"),
   alternatives: $("alternatives"),
+  historyBar: $("historyBar"),
   translate: $("translateBtn"),
   translateSpin: $("translateSpinner"),
   sourceLang: $("sourceLang"),
@@ -726,6 +745,17 @@ function applyUILanguage() {
 }
 
 /* ============================ TIỆN ÍCH UI ============================ */
+function showNotice(message) {
+  if (state.noticeTimer) clearTimeout(state.noticeTimer);
+  el.notice.textContent = String(message || "");
+  el.notice.style.display = message ? "block" : "none";
+  if (message) {
+    state.noticeTimer = setTimeout(() => {
+      el.notice.style.display = "none";
+      el.notice.textContent = "";
+    }, 4500);
+  }
+}
 function showError(message) {
   el.error.textContent = String(message || t("errUnknown"));
   el.error.style.display = "block";
@@ -734,10 +764,9 @@ function clearError() {
   el.error.textContent = "";
   el.error.style.display = "none";
 }
-function setStatus(extraNote = "") {
+function setStatus() {
   const ready = Boolean(state.apiKey.trim());
-  const base = ready ? `${t("ready")} • ${state.model}` : t("noKey");
-  el.status.textContent = extraNote ? `${base} • ${extraNote}` : base;
+  el.status.textContent = ready ? `${t("ready")} • ${state.model}` : t("noKey");
   el.keyDot.classList.toggle("ready", ready);
 }
 function setBusy(busy, spinnerId) {
@@ -803,11 +832,40 @@ function persistModelSelection(newModel) {
   try {
     localStorage.setItem("smart_translate_model_v5", clean);
   } catch (_) {}
+  setStatus();
   if (prev !== clean) {
-    setStatus(t("switchedModel", clean));
-  } else {
-    setStatus();
+    showNotice(t("switchedModel", clean));
   }
+}
+
+function pushHistory(result) {
+  if (!result?.translation) return;
+  const entry = {
+    translation: result.translation,
+    pinyin: result.pinyin || "",
+    explanation: result.explanation || "",
+    alternatives: Array.isArray(result.alternatives) ? result.alternatives.slice(0, 3) : []
+  };
+  state.history = [entry, ...state.history.filter(h => h.translation !== entry.translation)].slice(0, CONFIG.maxHistory);
+  renderHistory();
+}
+
+function renderHistory() {
+  el.historyBar.replaceChildren();
+  if (!state.history.length) {
+    el.historyBar.style.display = "none";
+    return;
+  }
+  state.history.forEach(item => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "chip";
+    btn.textContent = item.translation;
+    btn.title = item.translation;
+    btn.addEventListener("click", () => renderResult(item, false));
+    el.historyBar.append(btn);
+  });
+  el.historyBar.style.display = "flex";
 }
 
 /* ============================ XỬ LÝ ẢNH ============================ */
@@ -847,7 +905,7 @@ async function optimizeImage(file) {
 
 /* ============================ GEMINI API (TỰ ĐỘNG ĐỔI MODEL OK) ============================ */
 async function rawGeminiRequest(modelName, parts, options) {
-  const { systemInstruction, temperature = 0.1, maxOutputTokens = 1600, timeoutMs = CONFIG.requestTimeoutMs } = options;
+  const { systemInstruction, temperature = 0.1, maxOutputTokens = 1500, timeoutMs = CONFIG.requestTimeoutMs } = options;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   const url = CONFIG.apiBase + encodeURIComponent(modelName.trim()) + ":generateContent";
@@ -980,7 +1038,15 @@ async function geminiRequest(parts, options = {}) {
       return parsed;
     } catch (err) {
       lastError = err;
-      const canTryNext = (err.retryable || err.status === 503 || err.status === 404 || err.status === 429 || err.status === 500 || err.status === 502 || err.status === 504);
+      const canTryNext = (
+        err.retryable ||
+        err.status === 503 ||
+        err.status === 404 ||
+        err.status === 429 ||
+        err.status === 500 ||
+        err.status === 502 ||
+        err.status === 504
+      );
       if (canTryNext && i < modelsToTry.length - 1) {
         el.status.textContent = t("tryingFallback");
         continue;
@@ -1064,7 +1130,7 @@ async function translateText(mode = "translate", inputOverride = null) {
         requireTranslation: true
       }
     );
-    renderResult(result);
+    renderResult(result, true);
   } catch (e) {
     showError(e.message || e);
   } finally {
@@ -1095,7 +1161,7 @@ async function translateImage() {
       ],
       { systemInstruction: "OCR và dịch nhanh chính xác. Trả về JSON.", temperature: 0.1, maxOutputTokens: 1800, requireTranslation: true }
     );
-    renderResult(result);
+    renderResult(result, true);
   } catch (e) {
     showError(e.message || e);
   } finally {
@@ -1126,7 +1192,7 @@ async function translateDrawing() {
       ],
       { systemInstruction: "Nhận dạng chữ viết tay và dịch nhanh. Trả về JSON.", temperature: 0.1, maxOutputTokens: 1500, requireTranslation: true }
     );
-    renderResult(result);
+    renderResult(result, true);
   } catch (e) {
     showError(e.message || e);
   } finally {
@@ -1134,7 +1200,7 @@ async function translateDrawing() {
   }
 }
 
-function renderResult(result) {
+function renderResult(result, saveToHistory = false) {
   state.lastResult = result;
   el.resultText.textContent = result.translation || "";
   el.pinyin.textContent = result.pinyin || "";
@@ -1155,6 +1221,8 @@ function renderResult(result) {
     el.alternatives.append(div);
   });
   el.alternatives.style.display = alternatives.length ? "flex" : "none";
+
+  if (saveToHistory) pushHistory(result);
 
   el.resultSection.style.display = "flex";
   el.ioBox.scrollTop = el.ioBox.scrollHeight;
@@ -1426,8 +1494,8 @@ function addBubble(text, side, translation) {
 }
 
 function liveLanguages(side) {
-  const src = sourceLang() === "auto" ? "Vietnamese" : sourceLang();
-  const tgt = targetLang();
+  const src = sourceLang() === "auto" ? "ngôn ngữ tự động nhận diện của người nói" : langPrompt(sourceLang());
+  const tgt = langPrompt(targetLang());
   return side === "A" ? { from: src, to: tgt } : { from: tgt, to: src };
 }
 
@@ -1593,7 +1661,7 @@ async function processLiveAudio(blob, mime, side) {
 
     el.liveStatus.textContent = "Đang nhận dạng và dịch…";
     const b64 = await blobToBase64(blob);
-    const prompt = `Nghe audio (${langPrompt(from)}), phiên âm chính xác rồi dịch tự nhiên sang ${langPrompt(to)}. Giữ nguyên số, tên riêng, mã thiết bị. Nếu không rõ ghi [không nghe rõ]. Trả JSON đúng schema.`;
+    const prompt = `Nghe audio (${from}), phiên âm chính xác rồi dịch tự nhiên sang ${to}. Giữ nguyên số, tên riêng, mã thiết bị. Nếu không rõ ghi [không nghe rõ]. Trả JSON đúng schema.`;
 
     const result = await geminiRequest(
       [
@@ -1616,9 +1684,10 @@ async function processLiveAudio(blob, mime, side) {
     const transcript = result.transcript || "(...)";
     const translation = result.translation || "";
     addBubble(transcript, side, translation);
-    if (result.pinyin && to === "Chinese") addBubble("Pinyin: " + result.pinyin, side, "");
+    const targetCode = side === "A" ? targetLang() : (sourceLang() === "auto" ? "Vietnamese" : sourceLang());
+    if (result.pinyin && targetCode === "Chinese") addBubble("Pinyin: " + result.pinyin, side, "");
     el.liveStatus.textContent = "Xong. Chọn người nói tiếp theo.";
-    if (translation) speak(translation, to);
+    if (translation) speak(translation, targetCode);
   } catch (e) {
     showError(e.message || e);
     el.liveStatus.textContent = "Dịch thất bại. Bạn có thể ghi âm lại.";
