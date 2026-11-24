@@ -503,7 +503,12 @@
       color: var(--danger);
     }
 
-    /* Bottom Dock (Matches reference layout) */
+    .turn-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Bottom Dock */
     .bottom-dock {
       margin-top: auto;
       display: flex;
@@ -748,7 +753,7 @@
       <div class="input-top-row">
         <textarea
           id="sourceText"
-          placeholder="Nhập văn bản"
+          placeholder="Nhập văn bản cần dịch..."
           rows="4"
         ></textarea>
 
@@ -933,14 +938,16 @@
       <div class="field">
         <label for="modelSelect">Chọn Model</label>
         <select id="modelSelect">
-          <option value="gemini-3.8-flash">gemini-3.8-flash (Khuyên dùng)</option>
-          <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+          <option value="gemini-2.5-flash" selected>gemini-2.5-flash (Ổn định, khuyên dùng)</option>
+          <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite (Nhanh, tiết kiệm)</option>
+          <option value="gemini-3.8-flash">gemini-3.8-flash (Mới nhất)</option>
+          <option value="gemini-2.5-pro">gemini-2.5-pro (Chất lượng cao nhất)</option>
           <option value="custom">Tùy chỉnh tên model...</option>
         </select>
       </div>
       <div class="field" id="customModelField" style="display:none;">
         <label for="customModelInput">Tên model tùy chỉnh</label>
-        <input type="text" id="customModelInput" placeholder="Ví dụ: gemini-3.8-flash" />
+        <input type="text" id="customModelInput" placeholder="Ví dụ: gemini-2.5-flash" />
       </div>
       <div class="modal-footer">
         <button class="ghost-btn" id="closeModalBtn" type="button">Đóng</button>
@@ -951,19 +958,19 @@
 
   <script>
     (() => {
-      const KEY_STORAGE = 'ai_dich_gemini_key_v2';
-      const MODEL_STORAGE = 'ai_dich_gemini_model_v2';
-      const DEFAULT_MODEL = 'gemini-3.8-flash';
+      const KEY_STORAGE = 'ai_dich_gemini_key_v3';
+      const MODEL_STORAGE = 'ai_dich_gemini_model_v3';
+      const DEFAULT_MODEL = 'gemini-2.5-flash';
 
       const $ = (id) => document.getElementById(id);
 
-      let imagePayload = null; // { mimeType, data }
+      let imagePayload = null;
       let lastTranslatedText = '';
       let isRecordingMic = false;
       let micRecorder = null;
       let micChunks = [];
 
-      let activeLiveSide = null; // 'left' | 'right' | null
+      let activeLiveSide = null;
       let liveRecorder = null;
       let liveChunks = [];
 
@@ -1002,6 +1009,21 @@
         const t = $('targetLang').value;
         $('liveLeftTitle').textContent = `Người A (${s})`;
         $('liveRightTitle').textContent = `Người B (${t})`;
+      }
+
+      // Lấy MIME type audio phù hợp với trình duyệt
+      function getSupportedAudioMime() {
+        const candidates = [
+          'audio/webm;codecs=opus',
+          'audio/webm',
+          'audio/mp4;codecs=mp4a.40.2',
+          'audio/mp4',
+          'audio/ogg;codecs=opus'
+        ];
+        for (const m of candidates) {
+          if (MediaRecorder.isTypeSupported(m)) return m;
+        }
+        return ''; // để trình duyệt tự chọn
       }
 
       refreshKeyStatus();
@@ -1070,9 +1092,7 @@
               $('sourceText').focus();
               return;
             }
-          } catch (_) {
-            // Fallback below if browser blocks clipboard read
-          }
+          } catch (_) {}
         }
         $('sourceText').focus();
         showError('Trình duyệt chặn đọc clipboard tự động. Hãy bấm giữ vào ô nhập rồi chọn Dán.');
@@ -1267,39 +1287,72 @@
         reader.readAsDataURL(file);
       }
 
-      // --- Gemini API Call ---
-      function buildRichPrompt(srcLang, tgtLang, instruction) {
-        return `Bạn là trợ lý dịch thuật và từ điển chuyên sâu.
-Nhiệm vụ: ${instruction}
-Ngôn ngữ nguồn: ${srcLang === 'auto' ? 'Tự động nhận diện' : srcLang}
-Ngôn ngữ đích: ${tgtLang}
+      // --- Gemini API Call với prompt nâng cao ---
+      function buildTranslationPrompt(srcLang, tgtLang, instruction) {
+        return `Bạn là một dịch giả chuyên nghiệp đa ngôn ngữ với hơn 20 năm kinh nghiệm, am hiểu sâu sắc về ngữ pháp, thành ngữ, sắc thái văn hóa và phong cách diễn đạt của nhiều ngôn ngữ.
 
-Trả về duy nhất 1 JSON hợp lệ theo cấu trúc sau (không bọc markdown):
+**QUY TẮC DỊCH THUẬT:**
+1. Dịch tự nhiên, trôi chảy như người bản xứ, không dịch word-by-word.
+2. Giữ nguyên ý nghĩa, sắc thái, giọng điệu và phong cách của bản gốc.
+3. Với thành ngữ, tục ngữ: tìm cách diễn đạt tương đương trong ngôn ngữ đích thay vì dịch literal.
+4. Với thuật ngữ chuyên ngành: giữ nguyên nếu không có tương đương chính xác, hoặc dịch kèm giải thích.
+5. Đảm bảo văn phong phù hợp: trang trọng/thân mật, kỹ thuật/đời thường, v.v.
+
+**NGÔN NGỮ NGUỒN:** ${srcLang === 'auto' ? 'Tự động nhận diện' : srcLang}
+**NGÔN NGỮ ĐÍCH:** ${tgtLang}
+
+**YÊU CẦU CỤ THỂ:** ${instruction}
+
+**ĐỊNH DẠNG ĐẦU RA (JSON hợp lệ, KHÔNG bọc markdown):**
 {
-  "detected_source": "Ngôn ngữ nguồn",
-  "source_text": "Nội dung gốc nhận diện được",
-  "translation": "Bản dịch chuẩn sang ${tgtLang}",
-  "phonetic": "Phiên âm cách đọc của bản dịch ở ${tgtLang} (Bắt buộc có Pinyin có dấu nếu đích là tiếng Trung, Romaji nếu đích là tiếng Nhật, IPA nếu đích là tiếng Anh/Pháp/..., hoặc chuỗi rỗng nếu đích là tiếng Việt)",
-  "note": "Chú thích ngắn gọn về sắc thái, từ loại hoặc cách dùng tự nhiên bằng tiếng Việt",
+  "detected_source": "Tên ngôn ngữ nguồn thực tế nhận diện được",
+  "source_text": "Nội dung gốc (transcript nếu là audio/ảnh)",
+  "translation": "Bản dịch chất lượng cao sang ${tgtLang}",
+  "phonetic": "Phiên âm cách đọc bản dịch. BẮT BUỘC có Pinyin có dấu nếu đích là tiếng Trung, Romaji nếu đích là tiếng Nhật, IPA nếu đích là tiếng Anh/Pháp/Đức/Tây Ban Nha, hoặc chuỗi rỗng nếu đích là tiếng Việt/Hàn/Thái",
+  "note": "Chú thích ngắn gọn bằng tiếng Việt về sắc thái, từ loại, cách dùng tự nhiên, hoặc lưu ý văn hóa (nếu có)",
   "examples": [
     {
-      "sentence": "Ví dụ 1 bằng ${tgtLang}",
-      "phonetic": "Phiên âm ví dụ 1",
-      "meaning_vi": "Nghĩa tiếng Việt ví dụ 1"
+      "sentence": "Câu ví dụ 1 bằng ${tgtLang} thể hiện cách dùng tự nhiên",
+      "phonetic": "Phiên âm của câu ví dụ 1 (theo quy tắc trên)",
+      "meaning_vi": "Nghĩa tiếng Việt của câu ví dụ 1"
     },
     {
-      "sentence": "Ví dụ 2 bằng ${tgtLang}",
-      "phonetic": "Phiên âm ví dụ 2",
-      "meaning_vi": "Nghĩa tiếng Việt ví dụ 2"
+      "sentence": "Câu ví dụ 2 bằng ${tgtLang}",
+      "phonetic": "Phiên âm của câu ví dụ 2",
+      "meaning_vi": "Nghĩa tiếng Việt của câu ví dụ 2"
     },
     {
-      "sentence": "Ví dụ 3 bằng ${tgtLang}",
-      "phonetic": "Phiên âm ví dụ 3",
-      "meaning_vi": "Nghĩa tiếng Việt ví dụ 3"
+      "sentence": "Câu ví dụ 3 bằng ${tgtLang}",
+      "phonetic": "Phiên âm của câu ví dụ 3",
+      "meaning_vi": "Nghĩa tiếng Việt của câu ví dụ 3"
     }
   ]
 }`;
       }
+
+      const RESPONSE_SCHEMA = {
+        type: 'object',
+        properties: {
+          detected_source: { type: 'string' },
+          source_text: { type: 'string' },
+          translation: { type: 'string' },
+          phonetic: { type: 'string' },
+          note: { type: 'string' },
+          examples: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                sentence: { type: 'string' },
+                phonetic: { type: 'string' },
+                meaning_vi: { type: 'string' }
+              },
+              required: ['sentence', 'meaning_vi']
+            }
+          }
+        },
+        required: ['translation']
+      };
 
       async function requestGemini({ prompt, inlineData = null }) {
         const apiKey = (localStorage.getItem(KEY_STORAGE) || '').trim();
@@ -1314,8 +1367,8 @@ Trả về duy nhất 1 JSON hợp lệ theo cấu trúc sau (không bọc markd
         const parts = [{ text: prompt }];
         if (inlineData) {
           parts.push({
-            inline_data: {
-              mime_type: inlineData.mimeType,
+            inlineData: {          // camelCase cho REST API
+              mimeType: inlineData.mimeType,
               data: inlineData.data
             }
           });
@@ -1328,7 +1381,8 @@ Trả về duy nhất 1 JSON hợp lệ theo cấu trúc sau (không bọc markd
             contents: [{ role: 'user', parts }],
             generationConfig: {
               temperature: 0.2,
-              responseMimeType: 'application/json'
+              responseMimeType: 'application/json',
+              responseSchema: RESPONSE_SCHEMA
             }
           })
         });
@@ -1403,10 +1457,10 @@ Trả về duy nhất 1 JSON hợp lệ theo cấu trúc sau (không bọc markd
         clearError();
         setBtnBusy('translateTextBtn', 'textSpinner', true);
         try {
-          const prompt = buildRichPrompt(
+          const prompt = buildTranslationPrompt(
             $('sourceLang').value,
             $('targetLang').value,
-            `Dịch nội dung sau: "${text}"`
+            `Dịch chính xác và tự nhiên nội dung sau: "${text}"`
           );
           const res = await requestGemini({ prompt });
           renderTranslationResult(res);
@@ -1425,15 +1479,16 @@ Trả về duy nhất 1 JSON hợp lệ theo cấu trúc sau (không bọc markd
         clearError();
         setBtnBusy('translateDrawBtn', 'drawSpinner', true);
         try {
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-          const prompt = buildRichPrompt(
+          // Dùng PNG để giữ nét vẽ sắc nét
+          const dataUrl = canvas.toDataURL('image/png');
+          const prompt = buildTranslationPrompt(
             $('sourceLang').value,
             $('targetLang').value,
-            'Nhận diện chữ viết tay, ký tự hoặc hình vẽ trên bảng vẽ và dịch sang ngôn ngữ đích.'
+            'Nhận diện chính xác chữ viết tay, ký tự hoặc hình vẽ trên bảng vẽ, sau đó dịch sang ngôn ngữ đích.'
           );
           const res = await requestGemini({
             prompt,
-            inlineData: { mimeType: 'image/jpeg', data: dataUrl.split(',')[1] }
+            inlineData: { mimeType: 'image/png', data: dataUrl.split(',')[1] }
           });
           if (res.source_text) {
             $('sourceText').value = res.source_text;
@@ -1455,10 +1510,10 @@ Trả về duy nhất 1 JSON hợp lệ theo cấu trúc sau (không bọc markd
         clearError();
         setBtnBusy('translateImageBtn', 'imgSpinner', true);
         try {
-          const prompt = buildRichPrompt(
+          const prompt = buildTranslationPrompt(
             $('sourceLang').value,
             $('targetLang').value,
-            'Đọc văn bản hoặc nhận diện nội dung chính trong hình ảnh và dịch sang ngôn ngữ đích.'
+            'Đọc và nhận diện chính xác toàn bộ văn bản trong hình ảnh (nếu có), sau đó dịch sang ngôn ngữ đích. Nếu ảnh không chứa văn bản, hãy mô tả nội dung chính và dịch mô tả đó.'
           );
           const res = await requestGemini({ prompt, inlineData: imagePayload });
           renderTranslationResult(res);
@@ -1476,10 +1531,14 @@ Trả về duy nhất 1 JSON hợp lệ theo cấu trúc sau (không bọc markd
           return;
         }
         clearError();
+
+        const mimeType = getSupportedAudioMime();
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
           micChunks = [];
-          micRecorder = new MediaRecorder(stream);
+          micRecorder = mimeType
+            ? new MediaRecorder(stream, { mimeType })
+            : new MediaRecorder(stream);
 
           micRecorder.ondataavailable = (e) => {
             if (e.data && e.data.size > 0) micChunks.push(e.data);
@@ -1490,14 +1549,22 @@ Trả về duy nhất 1 JSON hợp lệ theo cấu trúc sau (không bọc markd
             $('micBtn').classList.remove('recording');
             stream.getTracks().forEach((t) => t.stop());
 
-            const blob = new Blob(micChunks, { type: micRecorder.mimeType || 'audio/webm' });
+            const blob = new Blob(micChunks, { type: micRecorder.mimeType || mimeType || 'audio/webm' });
+
+            // Guard: audio quá ngắn
+            if (!blob || blob.size < 1000) {
+              showError('Đoạn ghi âm quá ngắn hoặc không có âm thanh. Vui lòng thử lại.');
+              refreshKeyStatus();
+              return;
+            }
+
             const base64 = await blobToBase64(blob);
             $('statusPill').textContent = 'Đang dịch giọng nói...';
             try {
-              const prompt = buildRichPrompt(
+              const prompt = buildTranslationPrompt(
                 $('sourceLang').value,
                 $('targetLang').value,
-                'Nghe đoạn ghi âm giọng nói, chép lại câu nói gốc và dịch sang ngôn ngữ đích.'
+                'Nghe và chép lại chính xác câu nói trong đoạn ghi âm, sau đó dịch sang ngôn ngữ đích một cách tự nhiên nhất.'
               );
               const res = await requestGemini({
                 prompt,
@@ -1547,9 +1614,13 @@ Trả về duy nhất 1 JSON hợp lệ theo cấu trúc sau (không bọc markd
       $('liveRightBtn').addEventListener('click', () => toggleLiveTurn('right'));
 
       async function toggleLiveTurn(side) {
+        // Nếu đang ghi âm
         if (activeLiveSide) {
-          if (liveRecorder && liveRecorder.state === 'recording') liveRecorder.stop();
-          return;
+          // Bấm lại đúng bên đang ghi → dừng
+          if (activeLiveSide === side) {
+            if (liveRecorder && liveRecorder.state === 'recording') liveRecorder.stop();
+          }
+          return; // Bấm bên kia → bỏ qua
         }
         clearError();
 
@@ -1559,10 +1630,13 @@ Trả về duy nhất 1 JSON hợp lệ theo cấu trúc sau (không bọc markd
         const outLang = side === 'left' ? baseTgt : baseSrc;
         const btn = side === 'left' ? $('liveLeftBtn') : $('liveRightBtn');
 
+        const mimeType = getSupportedAudioMime();
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
           liveChunks = [];
-          liveRecorder = new MediaRecorder(stream);
+          liveRecorder = mimeType
+            ? new MediaRecorder(stream, { mimeType })
+            : new MediaRecorder(stream);
 
           liveRecorder.ondataavailable = (e) => {
             if (e.data && e.data.size > 0) liveChunks.push(e.data);
@@ -1573,12 +1647,18 @@ Trả về duy nhất 1 JSON hợp lệ theo cấu trúc sau (không bọc markd
             btn.classList.remove('active');
             stream.getTracks().forEach((t) => t.stop());
 
-            const blob = new Blob(liveChunks, { type: liveRecorder.mimeType || 'audio/webm' });
+            const blob = new Blob(liveChunks, { type: liveRecorder.mimeType || mimeType || 'audio/webm' });
+            if (!blob || blob.size < 800) {
+              showError('Đoạn ghi âm quá ngắn. Vui lòng nói rõ hơn.');
+              return;
+            }
+
             const base64 = await blobToBase64(blob);
             const bubble = addBubble(side, 'Đang dịch...', '');
 
             try {
-              const prompt = `Nghe câu nói bằng ${speakLang} và dịch tự nhiên sang ${outLang}. Chỉ trả về JSON: {"source":"câu gốc","translated":"bản dịch","phonetic":"phiên âm nếu có"}`;
+              const prompt = `Bạn là phiên dịch viên chuyên nghiệp. Nghe câu nói bằng ${speakLang} và dịch tự nhiên sang ${outLang}.
+Chỉ trả về JSON hợp lệ: {"source":"câu gốc","translated":"bản dịch","phonetic":"phiên âm nếu có (Pinyin cho tiếng Trung, Romaji cho tiếng Nhật, IPA cho tiếng Anh/Pháp/Đức/Tây Ban Nha, hoặc rỗng)"}`;
               const res = await requestGemini({
                 prompt,
                 inlineData: { mimeType: blob.type || 'audio/webm', data: base64 }
