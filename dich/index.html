@@ -4,7 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#101418">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AI Translation">
 <title>AI Translation</title>
+<link id="faviconLink" rel="icon" type="image/png" sizes="512x512">
+<link id="appleTouchIconLink" rel="apple-touch-icon" sizes="512x512">
+<link id="manifestLink" rel="manifest">
 <style>
 :root{
   color-scheme:dark;--bg:#101418;--panel:#192127;--panel2:#202b33;--panel3:#27343d;
@@ -357,6 +364,145 @@ a{color:var(--accent)}
 
 <script>
 "use strict";
+
+/* ============================ TẠO ICON BẰNG CODE & PWA ============================ */
+function buildAppIconDataUrl(size = 512) {
+  const c = document.createElement("canvas");
+  c.width = size;
+  c.height = size;
+  const g = c.getContext("2d");
+  if (!g) return "";
+
+  const pad = Math.round(size * 0.04);
+  const rad = Math.round(size * 0.22);
+
+  // Nền bo góc + gradient xanh ngọc / xanh biển công nghệ
+  const bgGrad = g.createLinearGradient(0, 0, size, size);
+  bgGrad.addColorStop(0, "#0b2538");
+  bgGrad.addColorStop(0.55, "#114663");
+  bgGrad.addColorStop(1, "#187a8c");
+
+  g.save();
+  g.beginPath();
+  g.roundRect(pad, pad, size - pad * 2, size - pad * 2, rad);
+  g.clip();
+  g.fillStyle = bgGrad;
+  g.fillRect(0, 0, size, size);
+
+  // Vòng sáng trang trí
+  const glow = g.createRadialGradient(size * 0.78, size * 0.22, 10, size * 0.78, size * 0.22, size * 0.55);
+  glow.addColorStop(0, "rgba(165, 238, 255, 0.36)");
+  glow.addColorStop(1, "rgba(165, 238, 255, 0)");
+  g.fillStyle = glow;
+  g.fillRect(0, 0, size, size);
+
+  // Viền ánh sáng bên trong
+  g.strokeStyle = "rgba(196, 229, 255, 0.28)";
+  g.lineWidth = Math.max(4, Math.round(size * 0.015));
+  g.beginPath();
+  g.roundRect(pad + 6, pad + 6, size - (pad + 6) * 2, size - (pad + 6) * 2, Math.max(16, rad - 6));
+  g.stroke();
+
+  // Khối kính trung tâm
+  const boxPad = Math.round(size * 0.16);
+  const boxRad = Math.round(size * 0.14);
+  g.fillStyle = "rgba(10, 22, 32, 0.42)";
+  g.beginPath();
+  g.roundRect(boxPad, boxPad, size - boxPad * 2, size - boxPad * 2, boxRad);
+  g.fill();
+  g.strokeStyle = "rgba(142, 203, 255, 0.35)";
+  g.lineWidth = Math.max(2, Math.round(size * 0.007));
+  g.stroke();
+
+  // Chữ A bên trái trên
+  g.fillStyle = "#8ecbff";
+  g.font = `800 ${Math.round(size * 0.21)}px system-ui, -apple-system, sans-serif`;
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  g.fillText("A", size * 0.34, size * 0.38);
+
+  // Chữ 文 bên phải dưới
+  g.fillStyle = "#e6f6ff";
+  g.font = `700 ${Math.round(size * 0.19)}px "PingFang SC", "Microsoft YaHei", system-ui, sans-serif`;
+  g.fillText("文", size * 0.66, size * 0.63);
+
+  // Mũi tên trao đổi ngôn ngữ ở giữa
+  g.strokeStyle = "#8fe0b0";
+  g.lineWidth = Math.max(5, Math.round(size * 0.018));
+  g.lineCap = "round";
+  g.lineJoin = "round";
+
+  // Mũi tên trên sang phải
+  g.beginPath();
+  g.moveTo(size * 0.50, size * 0.33);
+  g.lineTo(size * 0.68, size * 0.33);
+  g.lineTo(size * 0.62, size * 0.27);
+  g.moveTo(size * 0.68, size * 0.33);
+  g.lineTo(size * 0.62, size * 0.39);
+  g.stroke();
+
+  // Mũi tên dưới sang trái
+  g.beginPath();
+  g.moveTo(size * 0.50, size * 0.67);
+  g.lineTo(size * 0.32, size * 0.67);
+  g.lineTo(size * 0.38, size * 0.61);
+  g.moveTo(size * 0.32, size * 0.67);
+  g.lineTo(size * 0.38, size * 0.73);
+  g.stroke();
+
+  // Tia sáng AI góc trên phải
+  const sx = size * 0.77;
+  const sy = size * 0.22;
+  const sr = size * 0.045;
+  g.fillStyle = "#c4e5ff";
+  g.beginPath();
+  g.moveTo(sx, sy - sr);
+  g.quadraticCurveTo(sx, sy, sx + sr, sy);
+  g.quadraticCurveTo(sx, sy, sx, sy + sr);
+  g.quadraticCurveTo(sx, sy, sx - sr, sy);
+  g.quadraticCurveTo(sx, sy, sx, sy - sr);
+  g.fill();
+
+  g.restore();
+  return c.toDataURL("image/png");
+}
+
+let manifestBlobUrl = null;
+function initPWAWithGeneratedIcon() {
+  const iconUrl = buildAppIconDataUrl(512);
+  if (!iconUrl) return;
+  const fav = document.getElementById("faviconLink");
+  const appleIcon = document.getElementById("appleTouchIconLink");
+  const manifestLink = document.getElementById("manifestLink");
+  if (fav) fav.href = iconUrl;
+  if (appleIcon) appleIcon.href = iconUrl;
+
+  if (manifestLink && window.Blob && window.URL?.createObjectURL) {
+    try {
+      if (manifestBlobUrl) URL.revokeObjectURL(manifestBlobUrl);
+      const manifest = {
+        name: "AI Translation",
+        short_name: "AI Translation",
+        start_url: ".",
+        scope: ".",
+        display: "standalone",
+        background_color: "#101418",
+        theme_color: "#101418",
+        icons: [
+          {
+            src: iconUrl,
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any maskable"
+          }
+        ]
+      };
+      const blob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });
+      manifestBlobUrl = URL.createObjectURL(blob);
+      manifestLink.href = manifestBlobUrl;
+    } catch (_) {}
+  }
+}
 
 /* ============================ CẤU HÌNH ============================ */
 const CONFIG = {
@@ -1864,9 +2010,14 @@ window.addEventListener("pagehide", () => {
     try { state.liveRecorder.stop(); } catch (_) {}
   }
   stopStream(state.liveStream);
+  if (manifestBlobUrl && window.URL?.revokeObjectURL) {
+    try { URL.revokeObjectURL(manifestBlobUrl); } catch (_) {}
+    manifestBlobUrl = null;
+  }
 });
 
 /* ============================ KHỞI TẠO ============================ */
+initPWAWithGeneratedIcon();
 applyUILanguage();
 if ("speechSynthesis" in window && speechSynthesis.getVoices) {
   speechSynthesis.getVoices();
